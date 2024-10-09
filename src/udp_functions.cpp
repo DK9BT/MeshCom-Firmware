@@ -431,7 +431,7 @@ bool startWIFI()
   }
 
   mcSerial.println();
-  mSerial.println("WIFI connect OK");
+  mcSerial.println("WIFI connect OK");
 
   return true;
 }

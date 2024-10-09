@@ -90,6 +90,7 @@ extern XPowersLibInterface *PMU;
 // Remote Debug
 // see: https://github.com/JoaoLopesF/RemoteDebug
 // Bugfix: #include <esp32/sha.h>
+// #include <esp32/sha_parallel_engine.h>
 #include "mc_serial.h"
 #include <RemoteDebug.h> 
 RemoteDebug Debug;
