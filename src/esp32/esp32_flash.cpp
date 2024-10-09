@@ -45,7 +45,7 @@ void init_flash(void)
 
     meshcom_settings.node_sset = preferences.getInt("node_sset", 0x0004);
 
-    meshcom_settings.node_maxv = preferences.getFloat("node_maxv", 4.24);
+    meshcom_settings.node_maxv = preferences.getFloat("node_maxv", 4.125);
 
     strVar = preferences.getString("node_extern", "none");
     sprintf(meshcom_settings.node_extern, "%s", strVar.c_str());
@@ -135,6 +135,8 @@ void init_flash(void)
 
     strVar = preferences.getString("node_passwd");
     sprintf(meshcom_settings.node_passwd, "%s", strVar.c_str());
+
+    meshcom_settings.node_sset3 = preferences.getInt("node_sset3", 0x0000);
 }
 
 void save_settings(void)
@@ -262,6 +264,8 @@ void save_settings(void)
 
     strVar = meshcom_settings.node_passwd;
     preferences.putString("node_passwd", strVar); 
+
+    preferences.putInt("node_sset3", meshcom_settings.node_sset3);
 
     preferences.end();
 
