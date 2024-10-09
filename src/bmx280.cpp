@@ -124,7 +124,7 @@ BMx280Wire bmx280(0x00);
 void setupBMX280()
 {
 	if(bWXDEBUG)	
-		Serial.printf("bBMPON:%i bBMEON:%i\n", bBMPON, bBMEON);
+		mcSerial.printf("bBMPON:%i bBMEON:%i\n", bBMPON, bBMEON);
 
   if(bBMPON)
     bmx_i2c_address = I2C_ADDRESS_BMP;
@@ -136,13 +136,13 @@ void setupBMX280()
 
 	bmx280.address_ = bmx_i2c_address;	//initialize the BMx280Wire classes private member address_ to the i2c address provided
 
-    Serial.printf("[INIT]...setupBMX280 - I2C:%02X\n", bmx_i2c_address);
+    mcSerial.printf("[INIT]...setupBMX280 - I2C:%02X\n", bmx_i2c_address);
 
 	//begin() checks the Interface, reads the sensor ID (to differentiate between BMP280 and BME280)
 	//and reads compensation parameters.
 	if (!bmx280.begin())
 	{
-		Serial.println("[INIT]...begin() failed. check your BMx280 Interface and I2C Address.");
+		mcSerial.println("[INIT]...begin() failed. check your BMx280 Interface and I2C Address.");
 	}
 
 	//reset sensor to default parameters.
@@ -159,10 +159,10 @@ void setupBMX280()
 		bmx280.writeOversamplingHumidity(BMx280MI::OSRS_H_x16);
 
   if(bBMEON)
-    Serial.printf("[INIT]...BME280 startet\n");
+    mcSerial.printf("[INIT]...BME280 startet\n");
 
   if(bBMPON)
-    Serial.printf("[INIT]...BMP280 startet\n");
+    mcSerial.printf("[INIT]...BMP280 startet\n");
 }
 
 bool loopBMX280()
@@ -174,7 +174,7 @@ bool loopBMX280()
 	if (!bmx280.measure())
 	{
     	if(bWXDEBUG)
-		  Serial.println("could not start measurement, is a measurement already running?");
+		  mcSerial.println("could not start measurement, is a measurement already running?");
 
 		return false;
 	}
@@ -183,7 +183,7 @@ bool loopBMX280()
 	if(!bmx280.hasValue())
 	{
 		if(bWXDEBUG)
-			Serial.println("BME/BMP Values not valid");
+			mcSerial.println("BME/BMP Values not valid");
 
 		maxValideCount++;
 
@@ -212,9 +212,9 @@ bool loopBMX280()
 
 	if(bWXDEBUG)
 	{
-		Serial.print("Pressure: "); Serial.println(fPress);
-		Serial.print("Pressure (64 bit): "); Serial.println(bmx280.getPressure64());
-		Serial.print("Temperature: "); Serial.println(fTemp);
+		mcSerial.print("Pressure: "); mcSerial.println(fPress);
+		mcSerial.print("Pressure (64 bit): "); mcSerial.println(bmx280.getPressure64());
+		mcSerial.print("Temperature: "); mcSerial.println(fTemp);
 	}
 
 	if (bmx280.isBME280())
@@ -226,8 +226,8 @@ bool loopBMX280()
 
 		if(bWXDEBUG)
 		{
-			Serial.print("Humidity: "); 
-			Serial.println(fHum);
+			mcSerial.print("Humidity: "); 
+			mcSerial.println(fHum);
 		}
 	}
 	else

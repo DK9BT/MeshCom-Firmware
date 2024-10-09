@@ -113,13 +113,13 @@ void setupGPS(bool bGPSON)
         PMU = new XPowersAXP2101(*w);
         if (!PMU->init())
         {
-            Serial.printf("[INIT]...Failed to find AXP2101 power management\n");
+            mcSerial.printf("[INIT]...Failed to find AXP2101 power management\n");
             delete PMU;
             PMU = NULL;
         }
         else
         {
-            Serial.printf("[INIT]...AXP2101 PMU init succeeded, using AXP2101 PMU\n");
+            mcSerial.printf("[INIT]...AXP2101 PMU init succeeded, using AXP2101 PMU\n");
         }
     }
 
@@ -128,13 +128,13 @@ void setupGPS(bool bGPSON)
         PMU = new XPowersAXP192(*w);
         if (!PMU->init())
         {
-            Serial.printf("[INIT]...Failed to find AXP192 power management\n");
+            mcSerial.printf("[INIT]...Failed to find AXP192 power management\n");
             delete PMU;
             PMU = NULL;
         }
         else
         {
-            Serial.printf("[INIT]...AXP192 PMU init succeeded, using AXP192 PMU\n");
+            mcSerial.printf("[INIT]...AXP192 PMU init succeeded, using AXP192 PMU\n");
         }
     }
 
@@ -152,11 +152,11 @@ void setupGPS(bool bGPSON)
         return;
     }
 
-    Serial.printf("[INIT]...AXP-Chip-Model:%i AXP-Chip-ID:%i\n", PMU->getChipModel(), PMU->getChipID());
+    mcSerial.printf("[INIT]...AXP-Chip-Model:%i AXP-Chip-ID:%i\n", PMU->getChipModel(), PMU->getChipID());
 
     if(PMU->getChipModel() == XPOWERS_AXP192)
     {
-        Serial.printf("[INIT]...AXP192 chip\n");
+        mcSerial.printf("[INIT]...AXP192 chip\n");
 
         //TODO PMU->setProtectedChannel(XPOWERS_DCDC3);
 
@@ -188,12 +188,12 @@ void setupGPS(bool bGPSON)
         // Set up the charging voltage
         PMU->setChargeTargetVoltage(XPOWERS_AXP192_CHG_VOL_4V2);
 
-        Serial.println("[INIT]...AXP192 PMU init succeeded, using AXP192 PMU");
+        mcSerial.println("[INIT]...AXP192 PMU init succeeded, using AXP192 PMU");
     }
     else
     if(PMU->getChipModel() == XPOWERS_AXP2101)
     {
-        Serial.printf("[INIT]...AXP2101 chip\n");
+        mcSerial.printf("[INIT]...AXP2101 chip\n");
         // Unuse power channel
         PMU->disablePowerOutput(XPOWERS_DCDC2);
         PMU->disablePowerOutput(XPOWERS_DCDC3);
@@ -242,68 +242,68 @@ void setupGPS(bool bGPSON)
         PMU->enableVbusVoltageMeasure();
         PMU->enableBattVoltageMeasure();
 
-        Serial.printf("=======================================================================\n");
+        mcSerial.printf("=======================================================================\n");
         if (PMU->isChannelAvailable(XPOWERS_DCDC1)) {
-            Serial.printf("DC1  : %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_DCDC1) ? "+" : "-",
+            mcSerial.printf("DC1  : %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_DCDC1) ? "+" : "-",
                     PMU->getPowerChannelVoltage(XPOWERS_DCDC1));
         }
         if (PMU->isChannelAvailable(XPOWERS_DCDC2)) {
-            Serial.printf("DC2  : %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_DCDC2) ? "+" : "-",
+            mcSerial.printf("DC2  : %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_DCDC2) ? "+" : "-",
                     PMU->getPowerChannelVoltage(XPOWERS_DCDC2));
         }
         if (PMU->isChannelAvailable(XPOWERS_DCDC3)) {
-            Serial.printf("DC3  : %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_DCDC3) ? "+" : "-",
+            mcSerial.printf("DC3  : %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_DCDC3) ? "+" : "-",
                     PMU->getPowerChannelVoltage(XPOWERS_DCDC3));
         }
         if (PMU->isChannelAvailable(XPOWERS_DCDC4)) {
-            Serial.printf("DC4  : %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_DCDC4) ? "+" : "-",
+            mcSerial.printf("DC4  : %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_DCDC4) ? "+" : "-",
                     PMU->getPowerChannelVoltage(XPOWERS_DCDC4));
         }
         if (PMU->isChannelAvailable(XPOWERS_LDO2)) {
-            Serial.printf("LDO2 : %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_LDO2) ? "+" : "-",
+            mcSerial.printf("LDO2 : %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_LDO2) ? "+" : "-",
                     PMU->getPowerChannelVoltage(XPOWERS_LDO2));
         }
         if (PMU->isChannelAvailable(XPOWERS_LDO3)) {
-            Serial.printf("LDO3 : %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_LDO3) ? "+" : "-",
+            mcSerial.printf("LDO3 : %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_LDO3) ? "+" : "-",
                     PMU->getPowerChannelVoltage(XPOWERS_LDO3));
         }
         if (PMU->isChannelAvailable(XPOWERS_ALDO1)) {
-            Serial.printf("ALDO1: %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_ALDO1) ? "+" : "-",
+            mcSerial.printf("ALDO1: %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_ALDO1) ? "+" : "-",
                     PMU->getPowerChannelVoltage(XPOWERS_ALDO1));
         }
         if (PMU->isChannelAvailable(XPOWERS_ALDO2)) {
-            Serial.printf("ALDO2: %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_ALDO2) ? "+" : "-",
+            mcSerial.printf("ALDO2: %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_ALDO2) ? "+" : "-",
                     PMU->getPowerChannelVoltage(XPOWERS_ALDO2));
         }
         if (PMU->isChannelAvailable(XPOWERS_ALDO3)) {
-            Serial.printf("ALDO3: %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_ALDO3) ? "+" : "-",
+            mcSerial.printf("ALDO3: %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_ALDO3) ? "+" : "-",
                     PMU->getPowerChannelVoltage(XPOWERS_ALDO3));
         }
         if (PMU->isChannelAvailable(XPOWERS_ALDO4)) {
-            Serial.printf("ALDO4: %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_ALDO4) ? "+" : "-",
+            mcSerial.printf("ALDO4: %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_ALDO4) ? "+" : "-",
                     PMU->getPowerChannelVoltage(XPOWERS_ALDO4));
         }
         if (PMU->isChannelAvailable(XPOWERS_BLDO1)) {
-            Serial.printf("BLDO1: %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_BLDO1) ? "+" : "-",
+            mcSerial.printf("BLDO1: %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_BLDO1) ? "+" : "-",
                     PMU->getPowerChannelVoltage(XPOWERS_BLDO1));
         }
         if (PMU->isChannelAvailable(XPOWERS_BLDO2)) {
-            Serial.printf("BLDO2: %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_BLDO2) ? "+" : "-",
+            mcSerial.printf("BLDO2: %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_BLDO2) ? "+" : "-",
                     PMU->getPowerChannelVoltage(XPOWERS_BLDO2));
         }
         if (PMU->isChannelAvailable(XPOWERS_VBACKUP)) {
-            Serial.printf("VBACK: %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_VBACKUP) ? "+" : "-",
+            mcSerial.printf("VBACK: %s   Voltage:%u mV \n", PMU->isPowerChannelEnable(XPOWERS_VBACKUP) ? "+" : "-",
                     PMU->getPowerChannelVoltage(XPOWERS_VBACKUP));
         }
-        Serial.printf("=======================================================================\n");
+        mcSerial.printf("=======================================================================\n");
 
         BOARD_HARDWARE = TBEAM_AXP2101;
         
-        Serial.println("[INIT]...All AXP2101 started");
+        mcSerial.println("[INIT]...All AXP2101 started");
     }
     else
     {
-        Serial.println("[INIT]...Failed to find AXP power management chip");
+        mcSerial.println("[INIT]...Failed to find AXP power management chip");
         delete PMU;
         PMU = NULL;
     }
@@ -315,14 +315,14 @@ void setupGPS(bool bGPSON)
 
 unsigned int readGPS(void)
 {
-    //Serial.println("readGPS");
+    //mcSerial.println("readGPS");
     
     String tmp_data = "";
 
     bool newData = false;
 
     if(bGPSDEBUG)
-        Serial.println("-----------check GPS-----------");
+        mcSerial.println("-----------check GPS-----------");
   
     // For one second we parse GPS data and report some key values
     //for (unsigned long start = millis(); millis() - start < 1000;)
@@ -341,7 +341,7 @@ unsigned int readGPS(void)
         }
 
         if(bGPSDEBUG)
-          Serial.print(c);
+          mcSerial.print(c);
 
         tmp_data += c;
         
@@ -356,7 +356,7 @@ unsigned int readGPS(void)
     }
 
     if(bGPSDEBUG)
-        Serial.printf("newData:%i SAT:%d Fix:%d UPD:%d VAL:%d HDOP:%i\n", newData, tinyGPSPlus.satellites.value(), tinyGPSPlus.sentencesWithFix(), tinyGPSPlus.location.isUpdated(), tinyGPSPlus.location.isValid(), tinyGPSPlus.hdop.value());
+        mcSerial.printf("newData:%i SAT:%d Fix:%d UPD:%d VAL:%d HDOP:%i\n", newData, tinyGPSPlus.satellites.value(), tinyGPSPlus.sentencesWithFix(), tinyGPSPlus.location.isUpdated(), tinyGPSPlus.location.isValid(), tinyGPSPlus.hdop.value());
 
     if (newData && tinyGPSPlus.location.isUpdated() && tinyGPSPlus.location.isValid() && tinyGPSPlus.hdop.isValid() && tinyGPSPlus.hdop.value() < 800)
     {
@@ -394,9 +394,9 @@ unsigned int readGPS(void)
         
         if(bGPSDEBUG)
         {
-            Serial.printf("GPS: LAT:%lf LON:%lf %02d-%02d-%02d %02d:%02d:%02d\n", tinyGPSPlus.location.lat(), tinyGPSPlus.location.lng(), tinyGPSPlus.date.year(), tinyGPSPlus.date.month(), tinyGPSPlus.date.day(), tinyGPSPlus.time.hour(), tinyGPSPlus.time.minute(), tinyGPSPlus.time.second());
+            mcSerial.printf("GPS: LAT:%lf LON:%lf %02d-%02d-%02d %02d:%02d:%02d\n", tinyGPSPlus.location.lat(), tinyGPSPlus.location.lng(), tinyGPSPlus.date.year(), tinyGPSPlus.date.month(), tinyGPSPlus.date.day(), tinyGPSPlus.time.hour(), tinyGPSPlus.time.minute(), tinyGPSPlus.time.second());
             
-            //Serial.printf("INT: LAT:%lf LON:%lf %i-%02i-%02i %02i:%02i:%02i\n", meshcom_settings.node_lat, meshcom_settings.node_lon, meshcom_settings.node_date_year, meshcom_settings.node_date_month,  meshcom_settings.node_date_day,
+            //mcSerial.printf("INT: LAT:%lf LON:%lf %i-%02i-%02i %02i:%02i:%02i\n", meshcom_settings.node_lat, meshcom_settings.node_lon, meshcom_settings.node_date_year, meshcom_settings.node_date_month,  meshcom_settings.node_date_day,
             // meshcom_settings.node_date_hour, meshcom_settings.node_date_minute, meshcom_settings.node_date_second );
         }
 
@@ -453,8 +453,8 @@ unsigned int getGPS(void)
 
     if(bMitHardReset)
     {
-        Serial.print("===== STATE ");
-        Serial.println(state);
+        mcSerial.print("===== STATE ");
+        mcSerial.println(state);
     }
 
     if(bGPSON)
@@ -477,25 +477,25 @@ unsigned int getGPS(void)
         case 0: // auto-baud connection, then switch to 38400 and save config
             do
             {
-                Serial.printf("GPS: trying 9600 baud <%i>\n", maxStateCount);
+                mcSerial.printf("GPS: trying 9600 baud <%i>\n", maxStateCount);
 
                 GPS.begin(9600);
 
                 if (myGPS.begin(GPS))
                 {
-                    Serial.println("GPS: connected at 9600 baud");
+                    mcSerial.println("GPS: connected at 9600 baud");
                     maxStateCount=1;
                     break;
                 }
 
                 delay(100);
 
-                Serial.printf("GPS: trying 38400 baud <%i>\n", maxStateCount);
+                mcSerial.printf("GPS: trying 38400 baud <%i>\n", maxStateCount);
                 GPS.begin(38400);
                 
                 if (myGPS.begin(GPS))
                 {
-                    Serial.println("GPS: connected at 38400 baud");
+                    mcSerial.println("GPS: connected at 38400 baud");
                     maxStateCount=1;
                     break;
                 }
@@ -527,7 +527,7 @@ unsigned int getGPS(void)
                         meshcom_settings.node_sset = meshcom_settings.node_sset & 0x7FBF;
                         save_settings();
 
-                        Serial.println("GPS serial not connected (set GPS to off)");
+                        mcSerial.println("GPS serial not connected (set GPS to off)");
         
                         break;
                     }
@@ -554,7 +554,7 @@ unsigned int getGPS(void)
                 myGPS.saveConfiguration(); //Save the current settings to flash and BBR
                 delay(100);
 
-                Serial.println("GPS serial connected, saved config");
+                mcSerial.println("GPS serial connected, saved config");
                 
                 state++;
             }
@@ -564,7 +564,7 @@ unsigned int getGPS(void)
         case 1: // hardReset, expect to see GPS back at 38400 baud
             if(bMitHardReset)
             {
-                Serial.println("Issuing hardReset (cold start)");
+                mcSerial.println("Issuing hardReset (cold start)");
 
                 myGPS.hardReset();
                 delay(3000);
@@ -572,11 +572,11 @@ unsigned int getGPS(void)
 
                 if (myGPS.begin(GPS))
                 {
-                    Serial.println("Success.");
+                    mcSerial.println("Success.");
                 }
                 else
                 {
-                    Serial.println("*** GPS did not respond at 9600 baud, starting over.");
+                    mcSerial.println("*** GPS did not respond at 9600 baud, starting over.");
                     state = 2;
                     //bMitHardReset=false;
                     break;
@@ -590,7 +590,7 @@ unsigned int getGPS(void)
         case 2: // factoryReset, expect to see GPS back at 9600 baud
             if(bMitHardReset)
             {
-                Serial.println("Issuing factoryReset");
+                mcSerial.println("Issuing factoryReset");
 
                 myGPS.factoryReset();
                 delay(3000); // takes more than one second... a loop to resync would be best
@@ -598,9 +598,9 @@ unsigned int getGPS(void)
 
                 if (myGPS.begin(GPS))
                 {
-                    Serial.println("Success.");
+                    mcSerial.println("Success.");
                 } else {
-                    Serial.println("*** GPS did not come back at 9600 baud, starting over.");
+                    mcSerial.println("*** GPS did not come back at 9600 baud, starting over.");
                     state = 0;
                     bMitHardReset=false;
                     break;
@@ -615,14 +615,14 @@ unsigned int getGPS(void)
             if(bMitHardReset)
             {
                 /*
-                Serial.print("GPS protocol version: ");
-                Serial.print(myGPS.getProtocolVersionHigh());
-                Serial.print('.');
-                Serial.println(myGPS.getProtocolVersionLow());
-                Serial.println();
+                mcSerial.print("GPS protocol version: ");
+                mcSerial.print(myGPS.getProtocolVersionHigh());
+                mcSerial.print('.');
+                mcSerial.println(myGPS.getProtocolVersionLow());
+                mcSerial.println();
                 */
             
-                Serial.println("GPS running");
+                mcSerial.println("GPS running");
             }
             
             state++;

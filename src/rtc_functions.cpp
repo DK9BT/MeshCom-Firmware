@@ -18,14 +18,14 @@ bool setupRTC()
 
     if (!rtc.begin())
     {
-        Serial.println("[INIT]...RTC not found");
-        Serial.flush();
+        mcSerial.println("[INIT]...RTC not found");
+        mcSerial.flush();
         return false;
     }
 
     if (rtc.lostPower())
     {
-        Serial.println("[INIT]...RTC lost power, let's set the time!");
+        mcSerial.println("[INIT]...RTC lost power, let's set the time!");
         // When time needs to be set on a new device, or after a power loss, the
         // following line sets the RTC to the date & time this sketch was compiled
         rtc.adjust(DateTime(2014, 1, 1, 0, 0, 0));
@@ -41,7 +41,7 @@ bool setupRTC()
     // January 21, 2014 at 3am you would call:
     // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
 
-    Serial.println("[INIT]...RTC set");
+    mcSerial.println("[INIT]...RTC set");
 
     bRTCON = true;
 
@@ -60,25 +60,25 @@ bool loopRTC()
     /*
     DateTime future (now + TimeSpan(7,12,30,6));
 
-    Serial.print(" now + 7d + 12h + 30m + 6s: ");
-    Serial.print(future.year(), DEC);
-    Serial.print('/');
-    Serial.print(future.month(), DEC);
-    Serial.print('/');
-    Serial.print(future.day(), DEC);
-    Serial.print(' ');
-    Serial.print(future.hour(), DEC);
-    Serial.print(':');
-    Serial.print(future.minute(), DEC);
-    Serial.print(':');
-    Serial.print(future.second(), DEC);
-    Serial.println();
+    mcSerial.print(" now + 7d + 12h + 30m + 6s: ");
+    mcSerial.print(future.year(), DEC);
+    mcSerial.print('/');
+    mcSerial.print(future.month(), DEC);
+    mcSerial.print('/');
+    mcSerial.print(future.day(), DEC);
+    mcSerial.print(' ');
+    mcSerial.print(future.hour(), DEC);
+    mcSerial.print(':');
+    mcSerial.print(future.minute(), DEC);
+    mcSerial.print(':');
+    mcSerial.print(future.second(), DEC);
+    mcSerial.println();
 
-    Serial.print("Temperature: ");
-    Serial.print(rtc.getTemperature());
-    Serial.println(" C");
+    mcSerial.print("Temperature: ");
+    mcSerial.print(rtc.getTemperature());
+    mcSerial.println(" C");
 
-    Serial.println();
+    mcSerial.println();
     */
 
     return true;
@@ -110,26 +110,26 @@ DateTime getRTCNow()
 String getStringRTCNow()
 {
     /*
-    Serial.print(now.year(), DEC);
-    Serial.print('/');
-    Serial.print(now.month(), DEC);
-    Serial.print('/');
-    Serial.print(now.day(), DEC);
-    Serial.print(" (");
-    Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
-    Serial.print(") ");
-    Serial.print(now.hour(), DEC);
-    Serial.print(':');
-    Serial.print(now.minute(), DEC);
-    Serial.print(':');
-    Serial.print(now.second(), DEC);
-    Serial.println();
+    mcSerial.print(now.year(), DEC);
+    mcSerial.print('/');
+    mcSerial.print(now.month(), DEC);
+    mcSerial.print('/');
+    mcSerial.print(now.day(), DEC);
+    mcSerial.print(" (");
+    mcSerial.print(daysOfTheWeek[now.dayOfTheWeek()]);
+    mcSerial.print(") ");
+    mcSerial.print(now.hour(), DEC);
+    mcSerial.print(':');
+    mcSerial.print(now.minute(), DEC);
+    mcSerial.print(':');
+    mcSerial.print(now.second(), DEC);
+    mcSerial.println();
 
-    Serial.print(" since midnight 1/1/1970 = ");
-    Serial.print(now.unixtime());
-    Serial.print("s = ");
-    Serial.print(now.unixtime() / 86400L);
-    Serial.println("d");
+    mcSerial.print(" since midnight 1/1/1970 = ");
+    mcSerial.print(now.unixtime());
+    mcSerial.print("s = ");
+    mcSerial.print(now.unixtime() / 86400L);
+    mcSerial.println("d");
     */
 
     char cdate[40];

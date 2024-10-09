@@ -6,6 +6,9 @@ definitions
 
 #include <Arduino.h>
 
+// Workarround
+#include "mc_serial.h"
+
 #define SOURCE_TYPE "C"
 #define SOURCE_VERSION "4.33"
 #define SOURCE_VERSION_SUB "e"

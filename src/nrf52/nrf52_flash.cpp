@@ -250,7 +250,7 @@ boolean save_settings(void)
 	
 	log_settings();
 
-    Serial.println("\nflash save...");
+    mcSerial.println("\nflash save...");
 
 	return result;
 }

@@ -187,7 +187,7 @@ unsigned long getUnixClock()
     unsigned long ut = (unsigned long)mktime(&timeinfo);
     unsigned long ot = (unsigned long)(meshcom_settings.node_utcoff * 3600.0); // utcoff in sec
 
-    //Serial.printf("Date: %i.%i.%i %i:%i:%i %lu %f %lu\n",timeinfo.tm_year, timeinfo.tm_mon, timeinfo.tm_mday, timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec, ut, meshcom_settings.node_utcoff, ot);
+    //mcSerial.printf("Date: %i.%i.%i %i:%i:%i %lu %f %lu\n",timeinfo.tm_year, timeinfo.tm_mon, timeinfo.tm_mday, timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec, ut, meshcom_settings.node_utcoff, ot);
 
 
 	return ut - ot;
@@ -208,7 +208,7 @@ void addBLEOutBuffer(uint8_t *buffer, uint16_t len)
     {
         unsigned long unix_time = getUnixClock();
         
-        //Serial.printf("UNIX TME:%lu\n", unix_time);
+        //mcSerial.printf("UNIX TME:%lu\n", unix_time);
 
         uint8_t tbuffer[5];
         tbuffer[0] = (unix_time >> 24) & 0xFF;
@@ -224,13 +224,13 @@ void addBLEOutBuffer(uint8_t *buffer, uint16_t len)
 
     if(bDEBUG)
     {
-        Serial.printf("<%02X>BLEtoPhone RingBuff added len=%i to element: %u\n", buffer[0], len, toPhoneWrite);
+        mcSerial.printf("<%02X>BLEtoPhone RingBuff added len=%i to element: %u\n", buffer[0], len, toPhoneWrite);
         printBuffer(BLEtoPhoneBuff[toPhoneWrite], len + 1 + 4);
     }
 
     toPhoneWrite++;
     
-    //Serial.printf("toPhoneWrite:%i\n", toPhoneWrite);
+    //mcSerial.printf("toPhoneWrite:%i\n", toPhoneWrite);
 
     if (toPhoneWrite >= MAX_RING) // if the buffer is full we start at index 0 -> take care of overwriting!
         toPhoneWrite = 0;
@@ -250,13 +250,13 @@ void addBLEComToOutBuffer(uint8_t *buffer, uint16_t len)
 
     if(bDEBUG)
     {
-        Serial.printf("<%02X>BLEComToPhone RingBuff added len=%i to element: %u\n", buffer[0], len, ComToPhoneWrite);
+        mcSerial.printf("<%02X>BLEComToPhone RingBuff added len=%i to element: %u\n", buffer[0], len, ComToPhoneWrite);
         printBuffer(BLEComToPhoneBuff[ComToPhoneWrite], len + 1);
     }
 
     ComToPhoneWrite++;
     
-    //Serial.printf("toPhoneWrite:%i\n", toPhoneWrite);
+    //mcSerial.printf("toPhoneWrite:%i\n", toPhoneWrite);
 
     if (ComToPhoneWrite >= MAX_RING) // if the buffer is full we start at index 0 -> take care of overwriting!
         ComToPhoneWrite = 0;
@@ -298,13 +298,13 @@ void addLoraRxBuffer(unsigned int msg_id)
     /*
     if(bDEBUG)
     {
-        Serial.printf("LoraRX Ringbuffer added element: %u %02X%02X%02X%02X", loraWrite, ringBufferLoraRX[loraWrite][3], ringBufferLoraRX[loraWrite][2], ringBufferLoraRX[loraWrite][1], ringBufferLoraRX[loraWrite][0]);
+        mcSerial.printf("LoraRX Ringbuffer added element: %u %02X%02X%02X%02X", loraWrite, ringBufferLoraRX[loraWrite][3], ringBufferLoraRX[loraWrite][2], ringBufferLoraRX[loraWrite][1], ringBufferLoraRX[loraWrite][0]);
     }
     */
 
     loraWrite++;
 
-    //Serial.printf("loraWrite:%i\n", loraWrite);
+    //mcSerial.printf("loraWrite:%i\n", loraWrite);
 
     if (loraWrite >= MAX_RING) // if the buffer is full we start at index 0 -> take care of overwriting!
         loraWrite = 0;
@@ -363,7 +363,7 @@ void sendDisplay1306(bool bClear, bool bTransfer, int x, int y, char *text)
     {
         if(pageLineAnz < 7 && strlen(text) < 25)
         {
-            //Serial.printf("pageLineAnz:%i text:%s\n", pageLineAnz, text);
+            //mcSerial.printf("pageLineAnz:%i text:%s\n", pageLineAnz, text);
 
             pageLine[pageLineAnz][0] = x;
             pageLine[pageLineAnz][1] = y;
@@ -376,7 +376,7 @@ void sendDisplay1306(bool bClear, bool bTransfer, int x, int y, char *text)
 
     if(bTransfer)
     {
-        //Serial.println("Transfer");
+        //mcSerial.println("Transfer");
         u8g2.firstPage();
         do
         {
@@ -654,7 +654,7 @@ void mainStartTimeLoop()
     // Start-Loop & Time-Loop
 
     //if(iInitDisplay > 0)
-    //    Serial.printf("iInitDisplay %i meshcom_settings.node_date_second %i DisplayTimeWait %i\n", iInitDisplay, meshcom_settings.node_date_second, DisplayTimeWait);
+    //    mcSerial.printf("iInitDisplay %i meshcom_settings.node_date_second %i DisplayTimeWait %i\n", iInitDisplay, meshcom_settings.node_date_second, DisplayTimeWait);
 
     if(iInitDisplay < 4)
     {
@@ -774,7 +774,7 @@ void sendDisplayText(struct aprsMessage &aprsmsg, int16_t rssi, int8_t snr)
                 if(!(cset[5] == clfd[0] && cset[8] == clfd[1] && cset[11] == clfd[2]))
                 {
                     bpass=false;
-                    Serial.printf("[MCP] wrong lfd:%s\n", clfd);
+                    mcSerial.printf("[MCP] wrong lfd:%s\n", clfd);
                 }
             }
 
@@ -790,7 +790,7 @@ void sendDisplayText(struct aprsMessage &aprsmsg, int16_t rssi, int8_t snr)
                         if(memcmp(cset+9, "ON", 2) == 0 || memcmp(cset+9, "on", 2) == 0)
                             bON = true;
 
-                        Serial.printf("[MCP] key:%-5.5s command: %c%i %s\n", cpasswd, cset[6], iswitch, (bON?"on":"off"));
+                        mcSerial.printf("[MCP] key:%-5.5s command: %c%i %s\n", cpasswd, cset[6], iswitch, (bON?"on":"off"));
 
                         bool bPhoneReady = false;
                         if (isPhoneReady == 1)
@@ -806,17 +806,17 @@ void sendDisplayText(struct aprsMessage &aprsmsg, int16_t rssi, int8_t snr)
                     }
                     else
                     {
-                        Serial.println("[MCP] wrong switch number");
+                        mcSerial.println("[MCP] wrong switch number");
                     }
                 }
                 else
                 {
-                    Serial.println("[MCP] no command recognized");
+                    mcSerial.println("[MCP] no command recognized");
                 }
             }
             else
             {
-                Serial.println("[MCP] wrong keyword");
+                mcSerial.println("[MCP] wrong keyword");
             }
         return;
     }
@@ -849,9 +849,9 @@ void sendDisplayText(struct aprsMessage &aprsmsg, int16_t rssi, int8_t snr)
 
             if(bDisplayInfo)
             {
-                Serial.println("");
-                Serial.print(getTimeString());
-                Serial.println(" TIMESET: Time set ");
+                mcSerial.println("");
+                mcSerial.print(getTimeString());
+                mcSerial.println(" TIMESET: Time set ");
             }
 
             bPosDisplay=true;
@@ -990,7 +990,7 @@ void sendDisplayText(struct aprsMessage &aprsmsg, int16_t rssi, int8_t snr)
         bEnd=true;
         line_text[20]=0x00;
         sprintf(msg_text, "%s", line_text);
-        //Serial.printf("1306-02:%s len:%i izeile:%i\n", msg_text, strlen(msg_text), izeile);
+        //mcSerial.printf("1306-02:%s len:%i izeile:%i\n", msg_text, strlen(msg_text), izeile);
         msg_text[20]=0x00;
         sendDisplay1306(bClear, bEnd, 3, izeile, msg_text);
     }
@@ -1034,12 +1034,12 @@ void checkButtonState()
                     bButtonCheck=false;
                     meshcom_settings.node_sset = meshcom_settings.node_sset & 0x7FEF;
                     save_settings();
-                    Serial.println("BUTTON not connected (set BUTTON to off)");
+                    mcSerial.println("BUTTON not connected (set BUTTON to off)");
                     return;
                 }
 
                 if(bDEBUG)
-                    Serial.printf("Button Pressed pageLastPointer:%i pageLastLineAnz[%i]:%i Track:%i\n", pageLastPointer, pagePointer, pageLastLineAnz[pagePointer], bDisplayTrack);
+                    mcSerial.printf("Button Pressed pageLastPointer:%i pageLastLineAnz[%i]:%i Track:%i\n", pageLastPointer, pagePointer, pageLastLineAnz[pagePointer], bDisplayTrack);
 
                 if(!bPressed)
                 {
@@ -1051,7 +1051,7 @@ void checkButtonState()
                     checkButtonTime = 20;
 
                     if(bDEBUG)
-                        Serial.printf("checkButtonTime:%i iPress:%i\n", checkButtonTime, iPress);
+                        mcSerial.printf("checkButtonTime:%i iPress:%i\n", checkButtonTime, iPress);
                 }
 
                 return;
@@ -1069,7 +1069,7 @@ void checkButtonState()
                     if(iPress == 3)
                     {
                         if(bDEBUG)
-                            Serial.println("BUTTON triple press");
+                            mcSerial.println("BUTTON triple press");
 
                         bDisplayTrack=!bDisplayTrack;
 
@@ -1087,7 +1087,7 @@ void checkButtonState()
                     if(iPress == 2)
                     {
                         if(bDEBUG)
-                            Serial.println("BUTTON double press");
+                            mcSerial.println("BUTTON double press");
 
                         if(bDisplayTrack)
                             commandAction((char*)"--sendtrack", false);
@@ -1098,7 +1098,7 @@ void checkButtonState()
                     if(iPress == 1 && !bDisplayTrack)
                     {
                         if(bDEBUG)
-                            Serial.printf("BUTTON singel press %i %i\n", pageLastLineAnz[pagePointer], bDisplayTrack);
+                            mcSerial.printf("BUTTON singel press %i %i\n", pageLastLineAnz[pagePointer], bDisplayTrack);
 
                         if(pageLastLineAnz[pagePointer] == 0)
                         {
@@ -1339,9 +1339,9 @@ void printBuffer(uint8_t *buffer, int len)
 {
   for (int i = 0; i < len; i++)
   {
-    Serial.printf("%02X ", buffer[i]);
+    mcSerial.printf("%02X ", buffer[i]);
   }
-  Serial.println("");
+  mcSerial.println("");
 }
 
 void printAsciiBuffer(uint8_t *buffer, int len)
@@ -1349,11 +1349,11 @@ void printAsciiBuffer(uint8_t *buffer, int len)
   for (int i = 0; i < len; i++)
   {
     if(buffer[i] == 0x00)
-        Serial.printf("#");
+        mcSerial.printf("#");
     else
-        Serial.printf("%c", buffer[i]);
+        mcSerial.printf("%c", buffer[i]);
   }
-  Serial.println("");
+  mcSerial.println("");
 }
 
 String getDateString()
@@ -1394,8 +1394,8 @@ String charBuffer_aprs(char *msgSource, struct aprsMessage &aprsmsg)
 
 void printBuffer_aprs(char *msgSource, struct aprsMessage &aprsmsg)
 {
-    Serial.print(getTimeString());
-    Serial.printf(" %s: %03i %c x%08X %02X %i %i %i %s>%s%c%s HW:%02i MOD:%02i FCS:%04X FW:%02i:%c LH:%02X", msgSource, aprsmsg.msg_len, aprsmsg.payload_type, aprsmsg.msg_id, aprsmsg.max_hop,
+    mcSerial.print(getTimeString());
+    mcSerial.printf(" %s: %03i %c x%08X %02X %i %i %i %s>%s%c%s HW:%02i MOD:%02i FCS:%04X FW:%02i:%c LH:%02X", msgSource, aprsmsg.msg_len, aprsmsg.payload_type, aprsmsg.msg_id, aprsmsg.max_hop,
         aprsmsg.msg_server, aprsmsg.msg_track, aprsmsg.msg_mesh, aprsmsg.msg_source_path.c_str(), aprsmsg.msg_destination_path.c_str(), aprsmsg.payload_type, aprsmsg.msg_payload.c_str(),
         aprsmsg.msg_source_hw, aprsmsg.msg_source_mod, aprsmsg.msg_fcs, aprsmsg.msg_source_fw_version, aprsmsg.msg_source_fw_sub_version, aprsmsg.msg_last_hw);
 }
@@ -1407,14 +1407,14 @@ void sendMessage(char *msg_text, int len)
 {
     if(len < 1 || len > 160)
     {
-        Serial.printf("sendMessage wrong text length:%i\n", len);
+        mcSerial.printf("sendMessage wrong text length:%i\n", len);
         return;
     }
 
     if(memcmp(msg_text, "--", 1) == 0)
     {
         if(bDisplayInfo)
-            Serial.printf("COMMAND:%s\n", msg_text);
+            mcSerial.printf("COMMAND:%s\n", msg_text);
 
         commandAction(msg_text, true);
         return;
@@ -1498,7 +1498,7 @@ void sendMessage(char *msg_text, int len)
     if(bDisplayInfo)
     {
         printBuffer_aprs((char*)"NEW-TXT", aprsmsg);
-        Serial.println();
+        mcSerial.println();
     }
 
     // An APP als Anzeige retour senden
@@ -1833,8 +1833,8 @@ void sendPosition(unsigned int intervall, double lat, char lat_c, double lon, ch
 
         if(bDisplayInfo)
         {
-            Serial.print(getTimeString());
-            Serial.printf(" LO-APRS:%s\n", msg_buffer+3);
+            mcSerial.print(getTimeString());
+            mcSerial.printf(" LO-APRS:%s\n", msg_buffer+3);
         }
 
         // local LoRa-APRS position-messages send to LoRa TX
@@ -1876,8 +1876,8 @@ void sendPosition(unsigned int intervall, double lat, char lat_c, double lon, ch
             {
                 if(bDisplayInfo)
                 {
-                    Serial.print(getTimeString());
-                    Serial.printf(" NEW-UDP:%s\n", msg_buffer+3);
+                    mcSerial.print(getTimeString());
+                    mcSerial.printf(" NEW-UDP:%s\n", msg_buffer+3);
                 }
 
                 // UDP out
@@ -1920,7 +1920,7 @@ void sendPosition(unsigned int intervall, double lat, char lat_c, double lon, ch
         if(bDisplayInfo)
         {
             printBuffer_aprs((char*)"NEW-POS", aprsmsg);
-            Serial.println();
+            mcSerial.println();
         }
 
         // local position-messages send to LoRa TX
@@ -1993,7 +1993,7 @@ void sendAPPPosition(double lat, char lat_c, double lon, char lon_c, float temp2
     if(bDisplayInfo)
     {
         printBuffer_aprs((char*)"NEW-POS", aprsmsg);
-        Serial.println();
+        mcSerial.println();
     }
 
     // local position-messages send to LoRa TX
@@ -2052,7 +2052,7 @@ void SendAckMessage(String dest_call, unsigned int iAckId)
     if(bDisplayInfo)
     {
         printBuffer_aprs((char*)"NEW-ACK", aprsmsg);
-        Serial.println();
+        mcSerial.println();
     }
 
     // ACK-Message send to LoRa TX
@@ -2160,8 +2160,8 @@ unsigned int setSMartBeaconing(double dlat, double dlon)
     {
         if(bGPSDEBUG)
         {
-            Serial.print(getTimeString());
-            Serial.printf(" POSINFO one-shot set - direction_diff:%i last_lat:%.1lf last_lon:%.1lf\n", direction_diff, posinfo_last_lat, posinfo_last_lon);
+            mcSerial.print(getTimeString());
+            mcSerial.printf(" POSINFO one-shot set - direction_diff:%i last_lat:%.1lf last_lon:%.1lf\n", direction_diff, posinfo_last_lat, posinfo_last_lon);
         }
     }
 

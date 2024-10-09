@@ -24,14 +24,14 @@ bool setupINA226()
 
     if (!INA0.begin() )
     {
-        Serial.println("[INIT]...INA226 not found");
+        mcSerial.println("[INIT]...INA226 not found");
         return false;
     }
 
     INA0.setMaxCurrentShunt(1, 0.002);
     INA0.setAverage(INA226_1024_SAMPLES);
 
-    Serial.println("[INIT]...INA226 set");
+    mcSerial.println("[INIT]...INA226 set");
 
     bINA226ON = true;
 
@@ -45,19 +45,19 @@ bool loopINA226()
         return false;
 
     /*
-    Serial.println("\nBUS\tSHUNT\tCURRENT\tPOWER");
+    mcSerial.println("\nBUS\tSHUNT\tCURRENT\tPOWER");
 
     for (int i = 0; i < 10; i++)
     {
-        Serial.print(INA0.getBusVoltage(), 2);
-        Serial.print("\t");
-        Serial.print(INA0.getShuntVoltage_mV(), 2);
-        Serial.print("\t");
-        Serial.print(INA0.getCurrent_mA(), 2);
-        Serial.print("\t");
-        Serial.print(INA0.getPower_mW(), 2);
-        Serial.print("\t");
-        Serial.println();
+        mcSerial.print(INA0.getBusVoltage(), 2);
+        mcSerial.print("\t");
+        mcSerial.print(INA0.getShuntVoltage_mV(), 2);
+        mcSerial.print("\t");
+        mcSerial.print(INA0.getCurrent_mA(), 2);
+        mcSerial.print("\t");
+        mcSerial.print(INA0.getPower_mW(), 2);
+        mcSerial.print("\t");
+        mcSerial.println();
     }
     */
 

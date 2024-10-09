@@ -370,7 +370,7 @@ void RadioInit();
     Radio.SetPublicNetwork(true);
 
     if(bLORADEBUG)
-        Serial.printf("[LoRa]...RF_FREQUENCY: %.4f kHz\n", getFreq());
+        mcSerial.printf("[LoRa]...RF_FREQUENCY: %.4f kHz\n", getFreq());
 
     uint32_t ifreq=(getFreq()*1000.)+0.5;
     ifreq = ifreq * 1000;
@@ -398,7 +398,7 @@ void RadioInit();
 
     // Set Radio TX configuration
     if(bLORADEBUG)
-        Serial.printf("[LoRa]...RF_POWER: %d dBm\n", getPower());
+        mcSerial.printf("[LoRa]...RF_POWER: %d dBm\n", getPower());
 
     Radio.SetTxConfig(
         MODEM_LORA,
@@ -447,7 +447,7 @@ void RadioInit();
     Radio.SetPublicNetwork(false);
 
     if(bLORADEBUG)
-        Serial.printf("[LoRa]...RF_FREQUENCY: %.4f kHz\n", LORA_APRS_FREQUENCY/1000000.);
+        mcSerial.printf("[LoRa]...RF_FREQUENCY: %.4f kHz\n", LORA_APRS_FREQUENCY/1000000.);
 
     //  Set the LoRa Frequency
     Radio.SetChannel((uint32_t)LORA_APRS_FREQUENCY);
@@ -472,7 +472,7 @@ void RadioInit();
 
     // Set Radio TX configuration
     if(bLORADEBUG)
-        Serial.printf("[LoRa]...RF_POWER: %d dBm\n", getPower());
+        mcSerial.printf("[LoRa]...RF_POWER: %d dBm\n", getPower());
 
     Radio.SetTxConfig(
         MODEM_LORA,
@@ -512,48 +512,48 @@ bool lora_setchip_new(float rf_freq, float rf_bw, int rf_sf, int rf_cr, int rf_s
 #ifdef ESP32
 
     if(bLORADEBUG)
-        Serial.printf("LoRa RF_FREQUENCY: %.3f MHz\n", rf_freq);
+        mcSerial.printf("LoRa RF_FREQUENCY: %.3f MHz\n", rf_freq);
 
     if (radio.setFrequency(rf_freq) == RADIOLIB_ERR_INVALID_FREQUENCY)
     {
-        Serial.println(F("Selected frequency is invalid for this module!"));
+        mcSerial.println(F("Selected frequency is invalid for this module!"));
         lora_setchip_meshcom();
         return false;
     }
 
     if(bLORADEBUG)
-        Serial.printf("LoRa RF_BANDWIDTH: %.0f kHz\n", rf_bw);
+        mcSerial.printf("LoRa RF_BANDWIDTH: %.0f kHz\n", rf_bw);
 
     if (radio.setBandwidth(rf_bw) == RADIOLIB_ERR_INVALID_BANDWIDTH)
     {
-        Serial.println(F("Selected bandwidth is invalid for this module!"));
+        mcSerial.println(F("Selected bandwidth is invalid for this module!"));
         lora_setchip_meshcom();
         return false;
     }
 
     if(bLORADEBUG)
-        Serial.printf("LoRa RF_SF: %i\n", rf_sf);
+        mcSerial.printf("LoRa RF_SF: %i\n", rf_sf);
 
     if (radio.setSpreadingFactor(rf_sf) == RADIOLIB_ERR_INVALID_SPREADING_FACTOR)
     {
-        Serial.println(F("Selected spreading factor is invalid for this module!"));
+        mcSerial.println(F("Selected spreading factor is invalid for this module!"));
         lora_setchip_meshcom();
         return false;
     }
 
     if(bLORADEBUG)
-        Serial.printf("LoRa RF_CR: 4/%i\n", rf_cr);
+        mcSerial.printf("LoRa RF_CR: 4/%i\n", rf_cr);
 
     if (radio.setCodingRate(rf_cr) == RADIOLIB_ERR_INVALID_CODING_RATE)
     {
-        Serial.println(F("Selected coding rate is invalid for this module!"));
+        mcSerial.println(F("Selected coding rate is invalid for this module!"));
         lora_setchip_meshcom();
         return false;
     }
 
     if (radio.setSyncWord(rf_syncword) != RADIOLIB_ERR_NONE)
     {
-        Serial.println(F("Unable to set sync word!"));
+        mcSerial.println(F("Unable to set sync word!"));
         lora_setchip_meshcom();
         return false;
     }
@@ -561,7 +561,7 @@ bool lora_setchip_new(float rf_freq, float rf_bw, int rf_sf, int rf_cr, int rf_s
     // set LoRa preamble length to 15 symbols (accepted range is 6 - 65535)
     if (radio.setPreambleLength(rf_preamble_length) == RADIOLIB_ERR_INVALID_PREAMBLE_LENGTH)
     {
-        Serial.println(F("Selected preamble length is invalid for this module!"));
+        mcSerial.println(F("Selected preamble length is invalid for this module!"));
         return false;
     }
 
@@ -569,7 +569,7 @@ bool lora_setchip_new(float rf_freq, float rf_bw, int rf_sf, int rf_cr, int rf_s
     #if defined(SX127X)
     if (radio.setCRC(rf_crc) == RADIOLIB_ERR_INVALID_CRC_CONFIGURATION)
     {
-        Serial.println(F("Selected CRC is invalid for this module!"));
+        mcSerial.println(F("Selected CRC is invalid for this module!"));
         return false;
     }
     #endif
@@ -581,7 +581,7 @@ bool lora_setchip_new(float rf_freq, float rf_bw, int rf_sf, int rf_cr, int rf_s
         icrc = 2;
 
     if (radio.setCRC(icrc) == RADIOLIB_ERR_INVALID_CRC_CONFIGURATION) {
-        Serial.println(F("Selected CRC is invalid for this module!"));
+        mcSerial.println(F("Selected CRC is invalid for this module!"));
         while (true);
     }
     #endif
@@ -592,7 +592,7 @@ bool lora_setchip_new(float rf_freq, float rf_bw, int rf_sf, int rf_cr, int rf_s
         icrc = 2;
 
     if (radio.setCRC(icrc) == RADIOLIB_ERR_INVALID_CRC_CONFIGURATION) {
-        Serial.println(F("Selected CRC is invalid for this module!"));
+        mcSerial.println(F("Selected CRC is invalid for this module!"));
         while (true);
     }
     #endif

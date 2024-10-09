@@ -100,7 +100,7 @@ void initAPRS(struct aprsMessage &aprsmsg, char msgType)
         aprsmsg.msg_source_mod = 6; // MeshCom SF 12 CR 4/6 BW 125 ... longslow
 
     if(bDEBUG)
-        Serial.printf("sf:%i cr:%i bw:%f ... mod:%i\n", meshcom_settings.node_sf, getCR(), getBW(), aprsmsg.msg_source_mod);
+        mcSerial.printf("sf:%i cr:%i bw:%f ... mod:%i\n", meshcom_settings.node_sf, getCR(), getBW(), aprsmsg.msg_source_mod);
 
     aprsmsg.msg_source_fw_version = shortVERSION();
     aprsmsg.msg_source_fw_sub_version = shortSUBVERSION();
@@ -125,7 +125,7 @@ uint16_t decodeAPRS(uint8_t RcvBuffer[UDP_TX_BUF_SIZE], uint16_t rsize, struct a
 
     if(rsize < 16)
     {
-        Serial.printf("APRS decode - Packet discarded, wrong APRS-protocol - size <%i> to short!\n", rsize);
+        mcSerial.printf("APRS decode - Packet discarded, wrong APRS-protocol - size <%i> to short!\n", rsize);
 
         if(bDEBUG && rsize < 255)
             printAsciiBuffer(RcvBuffer, rsize);
@@ -187,7 +187,7 @@ uint16_t decodeAPRS(uint8_t RcvBuffer[UDP_TX_BUF_SIZE], uint16_t rsize, struct a
                     {
                         if(!checkRegexCall(aprsmsg.msg_source_last))
                         {
-                            Serial.printf("APRS decode - Source-CallSign Error [%s]\n", aprsmsg.msg_source_last.c_str());
+                            mcSerial.printf("APRS decode - Source-CallSign Error [%s]\n", aprsmsg.msg_source_last.c_str());
                             bCallsignOk=false;
                         }
                     }
@@ -208,7 +208,7 @@ uint16_t decodeAPRS(uint8_t RcvBuffer[UDP_TX_BUF_SIZE], uint16_t rsize, struct a
 
         if(!bSourceEndOk)
         {
-            Serial.printf("APRS decode - Packet discarded, wrong APRS-protocol - bSourceEndOk (>) missing!\n");
+            mcSerial.printf("APRS decode - Packet discarded, wrong APRS-protocol - bSourceEndOk (>) missing!\n");
             
             if(bDEBUG && rsize < 255)
                 printAsciiBuffer(RcvBuffer, rsize);
@@ -218,7 +218,7 @@ uint16_t decodeAPRS(uint8_t RcvBuffer[UDP_TX_BUF_SIZE], uint16_t rsize, struct a
 
         if(!checkRegexCall(aprsmsg.msg_source_call))
         {
-            Serial.printf("APRS decode - Source-CallSign Error [%s]\n", aprsmsg.msg_source_call.c_str());
+            mcSerial.printf("APRS decode - Source-CallSign Error [%s]\n", aprsmsg.msg_source_call.c_str());
             bCallsignOk=false;
         }
 
@@ -255,7 +255,7 @@ uint16_t decodeAPRS(uint8_t RcvBuffer[UDP_TX_BUF_SIZE], uint16_t rsize, struct a
                         {
                             if(!checkRegexCall(msg_dest_last))
                             {
-                                Serial.printf("APRS decode - Destination-CallSign Error [%s]\n", msg_dest_last.c_str());
+                                mcSerial.printf("APRS decode - Destination-CallSign Error [%s]\n", msg_dest_last.c_str());
                                 bCallsignOk=false;
                             }
                         }
@@ -277,7 +277,7 @@ uint16_t decodeAPRS(uint8_t RcvBuffer[UDP_TX_BUF_SIZE], uint16_t rsize, struct a
 
         if(!bDestinationEndOk)
         {
-            Serial.printf("APRS decode - Packet discarded, wrong APRS-protocol - bDestinationEndOk (payload_type) missing!\n");
+            mcSerial.printf("APRS decode - Packet discarded, wrong APRS-protocol - bDestinationEndOk (payload_type) missing!\n");
 
             if(bDEBUG && rsize < 255)
                 printAsciiBuffer(RcvBuffer, rsize);
@@ -289,7 +289,7 @@ uint16_t decodeAPRS(uint8_t RcvBuffer[UDP_TX_BUF_SIZE], uint16_t rsize, struct a
         {
             if(!checkRegexCall(aprsmsg.msg_destination_call))
             {
-                Serial.printf("APRS decode - Destination-CallSign Error [%s]\n", aprsmsg.msg_destination_call.c_str());
+                mcSerial.printf("APRS decode - Destination-CallSign Error [%s]\n", aprsmsg.msg_destination_call.c_str());
                 bCallsignOk=false;
             }
         }
@@ -316,7 +316,7 @@ uint16_t decodeAPRS(uint8_t RcvBuffer[UDP_TX_BUF_SIZE], uint16_t rsize, struct a
 
         if(!bPayloadEndOk)
         {
-            Serial.printf("APRS decode - Packet discarded, wrong APRS-protocol - PayloadEnd (0x00) missing!\n");
+            mcSerial.printf("APRS decode - Packet discarded, wrong APRS-protocol - PayloadEnd (0x00) missing!\n");
 
             if(bDEBUG && rsize < 255)
                 printAsciiBuffer(RcvBuffer, rsize);
@@ -324,7 +324,7 @@ uint16_t decodeAPRS(uint8_t RcvBuffer[UDP_TX_BUF_SIZE], uint16_t rsize, struct a
             return 0x00;
         }
 
-        //Serial.printf("rsize:%i inext:%i HW:%02X MOD:%02X FCS1:%02X FCS2:%02X fcs:%i\n", rsize, inext, RcvBuffer[inext], RcvBuffer[inext+1], RcvBuffer[inext+2], RcvBuffer[inext+3], (unsigned int)(RcvBuffer[inext+2] << 8) | RcvBuffer[inext+3]);
+        //mcSerial.printf("rsize:%i inext:%i HW:%02X MOD:%02X FCS1:%02X FCS2:%02X fcs:%i\n", rsize, inext, RcvBuffer[inext], RcvBuffer[inext+1], RcvBuffer[inext+2], RcvBuffer[inext+3], (unsigned int)(RcvBuffer[inext+2] << 8) | RcvBuffer[inext+3]);
 
         aprsmsg.msg_source_hw = RcvBuffer[inext];
         inext++;
@@ -349,7 +349,7 @@ uint16_t decodeAPRS(uint8_t RcvBuffer[UDP_TX_BUF_SIZE], uint16_t rsize, struct a
             if(aprsmsg.msg_source_last != meshcom_settings.node_call)
             {
                 memcpy(temp, RcvBuffer, 10);
-                Serial.printf("APRS decode - Packet (%i) discarded, wrong FCS <%08X>:<%08X> wrong! <%02X %02X%02X%02X%02X %02X %-60.60s>\n", rsize, aprsmsg.msg_fcs, FCS_SUMME, temp[0], temp[4], temp[3], temp[2], temp[1], temp[5], RcvBuffer+6);
+                mcSerial.printf("APRS decode - Packet (%i) discarded, wrong FCS <%08X>:<%08X> wrong! <%02X %02X%02X%02X%02X %02X %-60.60s>\n", rsize, aprsmsg.msg_fcs, FCS_SUMME, temp[0], temp[4], temp[3], temp[2], temp[1], temp[5], RcvBuffer+6);
 
                 if(bDEBUG && rsize < 255)
                     printAsciiBuffer(RcvBuffer, rsize);
@@ -400,7 +400,7 @@ uint16_t decodeAPRS(uint8_t RcvBuffer[UDP_TX_BUF_SIZE], uint16_t rsize, struct a
         memcpy(temp, RcvBuffer, 10);
         
         if(temp[0] != 0x80)
-            Serial.printf("APRS decode - Packet discarded, wrong APRS-protocol! <%02X %02X%02X%02X%02X %02X %-60.60s>\n", temp[0], temp[4], temp[3], temp[2], temp[1], temp[5], RcvBuffer+6);
+            mcSerial.printf("APRS decode - Packet discarded, wrong APRS-protocol! <%02X %02X%02X%02X%02X %02X %-60.60s>\n", temp[0], temp[4], temp[3], temp[2], temp[1], temp[5], RcvBuffer+6);
 
         if(bLORADEBUG && rsize < 256)
             printAsciiBuffer(RcvBuffer, rsize);
@@ -974,32 +974,32 @@ uint16_t encodeLoRaAPRScompressed(uint8_t msg_buffer[UDP_TX_BUF_SIZE], char cSou
         if(ig == 1)
         {
             lgeo = 380926.0 * (90.0 - dlat);
-            //Serial.printf("dlat %lf lgeo %ld ", dlat, lgeo);
+            //mcSerial.printf("dlat %lf lgeo %ld ", dlat, lgeo);
         }
         else
         {
             lgeo = 190463.0 * (180.0 + dlon);
-            //Serial.printf("dlat %lf lgeo %ld ", dlon, lgeo);
+            //mcSerial.printf("dlat %lf lgeo %ld ", dlon, lgeo);
         }
 
 
         l1 = (double)lgeo / 753571.0;
         lgeo = lgeo - (long)(l1 * 753571);
 
-        //Serial.printf("l1 %i > rest %ld ", l1, lgeo);
+        //mcSerial.printf("l1 %i > rest %ld ", l1, lgeo);
 
         l2 = (double)lgeo / 8281.0;
         lgeo = lgeo - (long)(l2 * 8281);
 
-        //Serial.printf("l2 %i > rest %ld ", l2, lgeo);
+        //mcSerial.printf("l2 %i > rest %ld ", l2, lgeo);
 
         l3 = (double)lgeo / 91.0;
 
-        //Serial.printf("l3 %i > rest %ld ", l3, lgeo);
+        //mcSerial.printf("l3 %i > rest %ld ", l3, lgeo);
 
         l4 = lgeo - (long)(l3 * 91);
 
-        //Serial.printf("l4 %i\n", l4);
+        //mcSerial.printf("l4 %i\n", l4);
 
         if(ig == 1)
         {

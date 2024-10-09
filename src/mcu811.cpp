@@ -36,7 +36,7 @@ bool setupMCU811()
 
     if(!ccs.begin(0x5A))
     {
-        Serial.println("[INIT]... Failed to start sensor MCU-811! Please check your wiring.");
+        mcSerial.println("[INIT]... Failed to start sensor MCU-811! Please check your wiring.");
         return false;
     }
 
@@ -47,7 +47,7 @@ bool setupMCU811()
         maxMCU811ValideCount++;
         if(maxMCU811ValideCount > 10)
         {
-            Serial.println("[INIT]...MCU-811 not found");
+            mcSerial.println("[INIT]...MCU-811 not found");
             bMCU811ON=false;
             meshcom_settings.node_sset2 = meshcom_settings.node_sset2 & 0x7FF7; // MCU811 off
             save_settings();
@@ -60,7 +60,7 @@ bool setupMCU811()
     float temp = ccs.calculateTemperature();
     ccs.setTempOffset(temp - 25.0);
 
-    Serial.println("[INIT]...MCU-811 set");
+    mcSerial.println("[INIT]...MCU-811 set");
 
     return true;
 }
@@ -77,7 +77,7 @@ bool loopMCU811()
         maxMCU811ValideCount++;
         if(maxMCU811ValideCount > 10)
         {
-            Serial.println("[LOOP]...MCU-811 not available");
+            mcSerial.println("[LOOP]...MCU-811 not available");
             bMCU811ON=false;
             meshcom_settings.node_sset2 = meshcom_settings.node_sset2 & 0x7FF7; // MCU811 off
             save_settings();
@@ -93,35 +93,35 @@ bool loopMCU811()
     uint8_t i = ccs.readData();
 
     if(bWXDEBUG)
-        Serial.printf("ftCO2:%f retcod:%i\n", ftCO2, i);
+        mcSerial.printf("ftCO2:%f retcod:%i\n", ftCO2, i);
     
     if(i > 0)
     {
         if(bWXDEBUG)
         {
-            Serial.print("CO2temp: ");
-            Serial.print(ftCO2);
-            Serial.print(" °C, eCO2: ");
+            mcSerial.print("CO2temp: ");
+            mcSerial.print(ftCO2);
+            mcSerial.print(" °C, eCO2: ");
         }
 
         feCO2 = ccs.geteCO2();
 
         if(bWXDEBUG)
         {
-            Serial.print(feCO2);
-            Serial.print(" ppm, TVOC: ");      
+            mcSerial.print(feCO2);
+            mcSerial.print(" ppm, TVOC: ");      
         }
 
         fTVOC = ccs.getTVOC();
         
         if(bWXDEBUG)
         {
-            Serial.println(fTVOC);
+            mcSerial.println(fTVOC);
         }
     }
     else
     {
-        Serial.println("[LOOP]...ERROR readData from MCU-811!");
+        mcSerial.println("[LOOP]...ERROR readData from MCU-811!");
         return false;
     }
 

@@ -17,7 +17,7 @@ String HardWare[max_hardware] = {"no info", "TLORA_V2", "TLORA_V1", "TLORA_V2_1_
 
 void initMheard()
 {
-    Serial.println("[INIT]...initMheard");
+    mcSerial.println("[INIT]...initMheard");
 
     for(int iset=0; iset<MAX_MHEARD; iset++)
     {
@@ -118,7 +118,7 @@ void updateMheard(struct mheardLine &mheardLine, uint8_t isPhoneReady)
         ipos=mheardWrite;
         mheardWrite++;
         
-        //Serial.printf("mheardWrite:%i\n", mheardWrite);
+        //mcSerial.printf("mheardWrite:%i\n", mheardWrite);
 
         if(mheardWrite >= MAX_MHEARD)
             mheardWrite=0;
@@ -246,8 +246,8 @@ void sendMheard()
 
 void showMHeard()
 {
-    Serial.printf("/------------------------------------------------------------------------------------------------\\\n");
-    Serial.printf("|MHeard call |    date    |   time   | typ | source hardware | mod | rssi |  snr | dist | pl | m |\n");
+    mcSerial.printf("/------------------------------------------------------------------------------------------------\\\n");
+    mcSerial.printf("|MHeard call |    date    |   time   | typ | source hardware | mod | rssi |  snr | dist | pl | m |\n");
 
     mheardLine mheardLine;
 
@@ -257,30 +257,30 @@ void showMHeard()
         {
             if((mheardEpoch[iset]+60*60*6) > getUnixClock())
             {
-                Serial.printf("|------------|------------|----------|-----|-----------------|-----|------|------|------|----|---|\n");
+                mcSerial.printf("|------------|------------|----------|-----|-----------------|-----|------|------|------|----|---|\n");
 
-                Serial.printf("| %-10.10s | ", mheardCalls[iset]);
+                mcSerial.printf("| %-10.10s | ", mheardCalls[iset]);
                 
                 decodeMHeard(mheardBuffer[iset], mheardLine);
 
-                Serial.printf("%-10.10s | ", mheardLine.mh_date.c_str());
-                Serial.printf("%-8.8s | ", mheardLine.mh_time.c_str());
+                mcSerial.printf("%-10.10s | ", mheardLine.mh_date.c_str());
+                mcSerial.printf("%-8.8s | ", mheardLine.mh_time.c_str());
 
-                Serial.printf("%-3.3s | ", getPayloadType(mheardLine.mh_payload_type));
+                mcSerial.printf("%-3.3s | ", getPayloadType(mheardLine.mh_payload_type));
 
-                Serial.printf("%-11.11s/%03i | ", getHardwareLong(mheardLine.mh_hw).c_str(), mheardLine.mh_hw);
+                mcSerial.printf("%-11.11s/%03i | ", getHardwareLong(mheardLine.mh_hw).c_str(), mheardLine.mh_hw);
 
-                Serial.printf("%3i | ", mheardLine.mh_mod);
-                Serial.printf("%4i | ", mheardLine.mh_rssi);
-                Serial.printf("%4i |", mheardLine.mh_snr);
-                Serial.printf("%5.1lf |", mheardLine.mh_dist);
-                Serial.printf("%3i |", mheardLine.mh_path_len);
-                Serial.printf("%2i |\n", mheardLine.mh_mesh);
+                mcSerial.printf("%3i | ", mheardLine.mh_mod);
+                mcSerial.printf("%4i | ", mheardLine.mh_rssi);
+                mcSerial.printf("%4i |", mheardLine.mh_snr);
+                mcSerial.printf("%5.1lf |", mheardLine.mh_dist);
+                mcSerial.printf("%3i |", mheardLine.mh_path_len);
+                mcSerial.printf("%2i |\n", mheardLine.mh_mesh);
             }
         }
     }
 
-    Serial.printf("\\------------------------------------------------------------------------------------------------/\n");
+    mcSerial.printf("\\------------------------------------------------------------------------------------------------/\n");
 }
 
 char* getPayloadType(char ptype)

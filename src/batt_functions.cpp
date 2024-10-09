@@ -73,21 +73,21 @@ static void check_efuse(void)
 #elif CONFIG_IDF_TARGET_ESP32
     //Check if TP is burned into eFuse
     if (esp_adc_cal_check_efuse(ESP_ADC_CAL_VAL_EFUSE_TP) == ESP_OK) {
-        Serial.printf("eFuse Two Point: Supported\n");
+        mcSerial.printf("eFuse Two Point: Supported\n");
     } else {
-        Serial.printf("eFuse Two Point: NOT supported\n");
+        mcSerial.printf("eFuse Two Point: NOT supported\n");
     }
     //Check Vref is burned into eFuse
     if (esp_adc_cal_check_efuse(ESP_ADC_CAL_VAL_EFUSE_VREF) == ESP_OK) {
-        Serial.printf("eFuse Vref: Supported\n");
+        mcSerial.printf("eFuse Vref: Supported\n");
     } else {
-        Serial.printf("eFuse Vref: NOT supported\n");
+        mcSerial.printf("eFuse Vref: NOT supported\n");
     }
 #elif CONFIG_IDF_TARGET_ESP32S2
     if (esp_adc_cal_check_efuse(ESP_ADC_CAL_VAL_EFUSE_TP) == ESP_OK) {
-        Serial.printf("eFuse Two Point: Supported\n");
+        mcSerial.printf("eFuse Two Point: Supported\n");
     } else {
-        Serial.printf("Cannot retrieve eFuse Two Point calibration values. Default calibration values will be used.\n");
+        mcSerial.printf("Cannot retrieve eFuse Two Point calibration values. Default calibration values will be used.\n");
     }
 #else
 #error "This example is configured for ESP32/ESP32S2."
@@ -97,11 +97,11 @@ static void check_efuse(void)
 static void print_char_val_type(esp_adc_cal_value_t val_type)
 {
     if (val_type == ESP_ADC_CAL_VAL_EFUSE_TP) {
-        Serial.printf("Characterized using Two Point Value\n");
+        mcSerial.printf("Characterized using Two Point Value\n");
     } else if (val_type == ESP_ADC_CAL_VAL_EFUSE_VREF) {
-        Serial.printf("Characterized using eFuse Vref\n");
+        mcSerial.printf("Characterized using eFuse Vref\n");
     } else {
-        Serial.printf("Characterized using Default Vref\n");
+        mcSerial.printf("Characterized using Default Vref\n");
     }
 }
 
@@ -114,7 +114,7 @@ static void print_char_val_type(esp_adc_cal_value_t val_type)
  */
 void init_batt(void)
 {
-    Serial.println("[INIT]...init_batt");
+    mcSerial.println("[INIT]...init_batt");
 
 /** Analog input for battery level */
 #if defined(NRF52_SERIES)
@@ -157,7 +157,7 @@ void init_batt(void)
  */
 float read_batt(void)
 {
-	//Serial.println("read_batt");
+	//mcSerial.println("read_batt");
 
 	is_receiving = true;
 
@@ -178,7 +178,7 @@ float read_batt(void)
 
 		raw = (float)adc_reading;
 
-		//Serial.printf("Raw: %d\n", adc_reading);
+		//mcSerial.printf("Raw: %d\n", adc_reading);
 	#else
 
 	int imax=1;
@@ -200,12 +200,12 @@ float read_batt(void)
 
 	//Convert adc_reading to voltage in mV
 	uint32_t voltage = esp_adc_cal_raw_to_voltage(adc_reading, adc_chars);
-	//Serial.printf("Raw: %d\tVoltage: %dmV\n", adc_reading, voltage);
+	//mcSerial.printf("Raw: %d\tVoltage: %dmV\n", adc_reading, voltage);
 	
 
 	raw = voltage;
 	
-	//Serial.printf("adc_reading:%i voltage:%i\n", adc_reading, voltage);
+	//mcSerial.printf("adc_reading:%i voltage:%i\n", adc_reading, voltage);
 
 	#endif
 
@@ -222,7 +222,7 @@ float read_batt(void)
 		raw = raw * 24.80;
 	#endif
 
-	//Serial.printf("\nFLOW raw:%.2f mV\n", raw);
+	//mcSerial.printf("\nFLOW raw:%.2f mV\n", raw);
 
 	delay(50);
 

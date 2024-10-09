@@ -29,8 +29,8 @@
 
 //---|debugging |---------------------------------------------------------------
 #if defined(TEST)
-#  define DebugOut(s)		Serial.println(s)
-#  define DebugVal(s,x)		Serial.printf(s,x)
+#  define DebugOut(s)		mcSerial.println(s)
+#  define DebugVal(s,x)		mcSerial.printf(s,x)
 #else
 #  define DebugOut(s)
 #  define DebugVal(s,x)
@@ -98,7 +98,7 @@ Clock::EEvent Clock::CheckEvent()
 		tsClock_m += u32Diff;
 		localtime_r(&tsClock_m, &suClock_m);
 #if defined(TEST)
-		Serial.printf("[clock] clock %2u:%02u:%02u\n",
+		mcSerial.printf("[clock] clock %2u:%02u:%02u\n",
 		              suClock_m.tm_hour, suClock_m.tm_min, suClock_m.tm_sec);
 #endif
 
@@ -138,7 +138,7 @@ Clock::EEvent Clock::CheckEvent()
 		u32Start_m = millis();
 		u32Next_m  = u32Start_m + 1000; //((60 - suClock_m.tm_sec) * 1000);
 #if defined(TEST)
-		Serial.printf("[clock] now %lu -> then %lu)\n", u32Start_m, u32Next_m);
+		mcSerial.printf("[clock] now %lu -> then %lu)\n", u32Start_m, u32Next_m);
 #endif
 	}
 
@@ -431,7 +431,7 @@ bool Clock::SetAlarmRelative(const int iHourRel /*= 0*/, const int iMinRel /*= 1
 bool Clock::SetClock(const struct tm suNow)
 {
 #if defined(TEST)
-	Serial.printf("[clock] new date/time: %04u/%02u/%02u %2u:%02u:%02u\n",
+	mcSerial.printf("[clock] new date/time: %04u/%02u/%02u %2u:%02u:%02u\n",
                       1900 + suNow.tm_year, 1 + suNow.tm_mon, suNow.tm_mday,
 		      suNow.tm_hour, suNow.tm_min, suNow.tm_sec);
 #endif
@@ -449,7 +449,7 @@ bool Clock::SetClock(const time_t tsNow, const bool boUseUTC /*= true*/)
 	(boUseUTC) ? gmtime_r(&tsClock_m, &suClock_m)
 	           : localtime_r(&tsClock_m, &suClock_m);
 #if defined(TEST)
-	Serial.printf("[clock] new date/time: %04u/%02u/%02u %2u:%02u:%02u\n",
+	mcSerial.printf("[clock] new date/time: %04u/%02u/%02u %2u:%02u:%02u\n",
                       1900 + suClock_m.tm_year, 1 + suClock_m.tm_mon,
 		      suClock_m.tm_mday, suClock_m.tm_hour,
 		      suClock_m.tm_min,  suClock_m.tm_sec);
@@ -466,7 +466,7 @@ bool Clock::SetClock()
 	u32Start_m = millis();
 	u32Next_m  = u32Start_m + 1000; //((60 - suClock_m.tm_sec) * 1000);
 #if defined(TEST)
-	Serial.printf("[clock] set clock %02u:%02u:%02u (%lu -> %lu)\n",
+	mcSerial.printf("[clock] set clock %02u:%02u:%02u (%lu -> %lu)\n",
 	              suClock_m.tm_hour, suClock_m.tm_min, suClock_m.tm_sec,
 		      u32Start_m, u32Next_m);
 #endif
@@ -556,7 +556,7 @@ void Clock::Snooze(bool bo24Hours /*= false*/)
 void Clock::setCurrentTime(float fUTC, uint16_t Year, uint16_t Month, uint16_t Day, uint16_t Hour, uint16_t Minute, uint16_t Second)
 {
 
-	//Serial.printf("Date %i-%i-%i %02i:%02i:%02i\n", Year, Month, Day, Hour, Minute, Second);
+	//mcSerial.printf("Date %i-%i-%i %02i:%02i:%02i\n", Year, Month, Day, Hour, Minute, Second);
 
 	struct tm suNow;
 

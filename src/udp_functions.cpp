@@ -95,7 +95,7 @@ void getMeshComUDPpacket(unsigned char inc_udp_buffer[UDP_TX_BUF_SIZE], int pack
         zerocount = 0;
     }
 
-    //Serial.printf("zerocount:%i\n", zerocount);
+    //mcSerial.printf("zerocount:%i\n", zerocount);
 
     if (zerocount <= MAX_ZEROS)
     {
@@ -173,7 +173,7 @@ void getMeshComUDPpacket(unsigned char inc_udp_buffer[UDP_TX_BUF_SIZE], int pack
           if(bDisplayInfo)
           {
             printBuffer_aprs((char*)"RX-UDP ", aprsmsg);
-            Serial.println();
+            mcSerial.println();
           }
 
           aprsmsg.msg_source_path.concat(',');
@@ -337,7 +337,7 @@ void sendMeshComUDP()
               if(bDisplayInfo)
               {
                 printBuffer_aprs((char*)"TX-UDP ", aprsmsg);
-                Serial.println("");
+                mcSerial.println("");
               }
             }
 
@@ -371,7 +371,7 @@ bool startWIFI()
   {
     if(strcmp(meshcom_settings.node_ssid, "none") == 0)
     {
-      Serial.printf("WiFI no ssid<%s> not connected\n", meshcom_settings.node_ssid);
+      mcSerial.printf("WiFI no ssid<%s> not connected\n", meshcom_settings.node_ssid);
       return false;
     }
   }
@@ -381,22 +381,22 @@ bool startWIFI()
 
   int iWlanWait = 0;
 
-  Serial.print("Wait WiFI connect ");
+  mcSerial.print("Wait WiFI connect ");
 
   while(WiFi.status() != WL_CONNECTED && iWlanWait < 20)
   {
     delay(500);
-    Serial.print(".");
+    mcSerial.print(".");
     iWlanWait++;
 
     if(iWlanWait > 15)
     {
-      Serial.printf("\nWiFI ssid<%s> connection error\n", meshcom_settings.node_ssid);
+      mcSerial.printf("\nWiFI ssid<%s> connection error\n", meshcom_settings.node_ssid);
       return false;
     }
   }
 
-  Serial.println();
+  mcSerial.println();
 
   return true;
 }
@@ -454,7 +454,7 @@ void startMeshComUDP()
 
   Udp.begin(LOCAL_PORT);
 
-  Serial.printf("WiFi now listening at IP %s, UDP port %d\n",  s_node_ip.c_str(), LOCAL_PORT);
+  mcSerial.printf("WiFi now listening at IP %s, UDP port %d\n",  s_node_ip.c_str(), LOCAL_PORT);
 
   hasIPaddress=true;
   meshcom_settings.node_hasIPaddress = hasIPaddress;
@@ -525,7 +525,7 @@ void startExternUDP()
 
   UdpExtern.begin(EXTERN_PORT);
 
-  Serial.printf("WiFi now listening at IP %s, UDP port %d\n",  s_extern_node_ip.c_str(), EXTERN_PORT);
+  mcSerial.printf("WiFi now listening at IP %s, UDP port %d\n",  s_extern_node_ip.c_str(), EXTERN_PORT);
 
   hasExternIPaddress=true;
 
@@ -645,16 +645,16 @@ void getExtern(unsigned char incoming[255], int len)
   aprsmsg.msg_destination_path="*";
   aprsmsg.msg_payload="none";
 
-  //Serial.printf("len:%i icomming:%s vgldst:%s vglmsg:%s\n", len, incoming, vgldst, vglmsg);
+  //mcSerial.printf("len:%i icomming:%s vgldst:%s vglmsg:%s\n", len, incoming, vgldst, vglmsg);
 
   aprsmsg.msg_destination_path = getJSON(incoming, len, (char*)"dst");
   aprsmsg.msg_payload = getJSON(incoming, len, (char*)"msg");
 
-  Serial.printf("aprsmsg.msg_destination_path:%s aprsmsg.msg_payload:%s\n", aprsmsg.msg_destination_path, aprsmsg.msg_payload);
+  mcSerial.printf("aprsmsg.msg_destination_path:%s aprsmsg.msg_payload:%s\n", aprsmsg.msg_destination_path, aprsmsg.msg_payload);
 
   if(aprsmsg.msg_payload == "none")
   {
-    Serial.println("wrong JSON to send message");
+    mcSerial.println("wrong JSON to send message");
     return;
   }
   
@@ -765,15 +765,15 @@ void sendExtern(bool bUDP, char *src_type, uint8_t buffer[500], uint8_t buflen)
     
     String str_ip = meshcom_settings.node_extern;
 
-    //Serial.println(str_ip.c_str());
+    //mcSerial.println(str_ip.c_str());
 
     apip.fromString(str_ip);
 
-    //Serial.println(apip.toString());
+    //mcSerial.println(apip.toString());
 
     UdpExtern.beginPacket(apip , EXTERN_PORT);
 
-    Serial.printf("c_json:%s %i\n", c_json, strlen(c_json));
+    mcSerial.printf("c_json:%s %i\n", c_json, strlen(c_json));
 
     if (!UdpExtern.write(u_json, strlen(c_json)))
     {
@@ -784,7 +784,7 @@ void sendExtern(bool bUDP, char *src_type, uint8_t buffer[500], uint8_t buflen)
   }
   else
   {
-    Serial.printf("%s\n", c_json);
+    mcSerial.printf("%s\n", c_json);
   }
 }
 
@@ -871,7 +871,7 @@ void addUdpOutBuffer(uint8_t *buffer, uint16_t len)
     ringBufferUDPout[udpWrite][0] = len;
     memcpy(ringBufferUDPout[udpWrite] + 1, buffer, len + 1);
 
-    //Serial.printf("UDP out Ringbuffer added element: %u\n", udpWrite);
+    //mcSerial.printf("UDP out Ringbuffer added element: %u\n", udpWrite);
     //DEBUG_MSG_VAL("UDP", udpWrite, "UDP Ringbuf added El.:");
     //neth.printBuffer(ringBufferUDPout[udpWrite], len + 1);
 
@@ -902,8 +902,8 @@ void sendKEEP()
     uint16_t hb_buffer_size = longname_len + 1 + sizeof(_GW_ID) + keep.length() + firmware.length() + grc_ids.length();
     uint8_t hb_buffer[hb_buffer_size];
 
-    // Serial.print("\nHB buffer size: ");
-    // Serial.println(hb_buffer_size);
+    // mcSerial.print("\nHB buffer size: ");
+    // mcSerial.println(hb_buffer_size);
 
     char longname_c[longname_len + 1];
     strcpy(longname_c, meshcom_settings.node_call);

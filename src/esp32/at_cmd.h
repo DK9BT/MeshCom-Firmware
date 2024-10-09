@@ -15,7 +15,7 @@
 
 #ifdef NRF52_SERIES
 #define AT_PRINTF(...)                  \
-	Serial.printf(__VA_ARGS__);         \
+	mcSerial.printf(__VA_ARGS__);         \
 	if (g_ble_uart_is_connected)        \
 	{                                   \
 		g_ble_uart.printf(__VA_ARGS__); \
@@ -23,7 +23,7 @@
 #endif
 #ifdef ESP32
 #define AT_PRINTF(...)                                                  \
-	Serial.printf(__VA_ARGS__);                                         \
+	mcSerial.printf(__VA_ARGS__);                                         \
 	if (g_ble_uart_is_connected)                                        \
 	{                                                                   \
 		char buff[255];                                                 \
@@ -35,7 +35,7 @@
 #endif
 #if defined ARDUINO_ARCH_RP2040
 #define AT_PRINTF(...) \
-	Serial.printf(__VA_ARGS__);
+	mcSerial.printf(__VA_ARGS__);
 #endif
 
 #define AT_ERROR "+CME ERROR:"

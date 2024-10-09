@@ -36,7 +36,7 @@ bool setupSOFTSER()
     Serial1.setTimeout(50);
 #endif
 
-    Serial.printf("[INIT]...SOFTSER RX:%i TX:%i BAUD:%i\n", meshcom_settings.node_ss_rx_pin, meshcom_settings.node_ss_tx_pin, meshcom_settings.node_ss_baud);
+    mcSerial.printf("[INIT]...SOFTSER RX:%i TX:%i BAUD:%i\n", meshcom_settings.node_ss_rx_pin, meshcom_settings.node_ss_tx_pin, meshcom_settings.node_ss_baud);
 
     return true;
 }
@@ -67,7 +67,7 @@ bool loopSOFTSER(int ID, int iFunction)
 
         strSOFTSER_BUF = "";
 
-        Serial.println(cText);
+        mcSerial.println(cText);
         
         sendSOFTSER(cText);
 
@@ -96,7 +96,7 @@ bool appSOFTSER(int ID)
     ////////////////////////////////////////////////////////////////////////
     // Pegestandsmesser
 
-    Serial.println(strSOFTSER_BUF.substring(0,24).c_str());
+    mcSerial.println(strSOFTSER_BUF.substring(0,24).c_str());
 
     // got time
     if(ID == 1) // Pegelmesser
@@ -114,7 +114,7 @@ bool appSOFTSER(int ID)
 
             if(bSOFTSERDEBUG)
             {
-                Serial.printf("SOFTSERDATA\n%s\n", strSOFTSER_BUF.substring(strSOFTSER_BUF.indexOf("?xml"), strSOFTSER_BUF.indexOf("firmware")).c_str());
+                mcSerial.printf("SOFTSERDATA\n%s\n", strSOFTSER_BUF.substring(strSOFTSER_BUF.indexOf("?xml"), strSOFTSER_BUF.indexOf("firmware")).c_str());
             }
 
             if(strSOFTSER_BUF.indexOf("stationId=") > 0)
@@ -123,7 +123,7 @@ bool appSOFTSER(int ID)
 
                 strSOFTSERAPP_ID = strtemp.substring(11, 21);
                 
-                Serial.printf("Station...%s\n", strSOFTSERAPP_ID.c_str());
+                mcSerial.printf("Station...%s\n", strSOFTSERAPP_ID.c_str());
             }
 
             if(strSOFTSER_BUF.indexOf("Wasserstand") > 0)
@@ -136,7 +136,7 @@ bool appSOFTSER(int ID)
 
                     strSOFTSERAPP_PEGEL = strtemp1.substring(strtemp1.indexOf(">")+1, strtemp1.indexOf("<")).c_str();
 
-                    Serial.printf("Pegel....%s cm\n", strSOFTSERAPP_PEGEL.c_str());
+                    mcSerial.printf("Pegel....%s cm\n", strSOFTSERAPP_PEGEL.c_str());
                 }
                 else
                     strSOFTSERAPP_PEGEL = "";
@@ -152,7 +152,7 @@ bool appSOFTSER(int ID)
 
                     strSOFTSERAPP_TEMP = strtemp1.substring(strtemp1.indexOf(">")+1, strtemp1.indexOf("<")).c_str();
 
-                    Serial.printf("Temp.....%s °C\n", strSOFTSERAPP_TEMP.c_str());
+                    mcSerial.printf("Temp.....%s °C\n", strSOFTSERAPP_TEMP.c_str());
                 }
                 else
                     strSOFTSERAPP_TEMP = "";
@@ -168,16 +168,16 @@ bool appSOFTSER(int ID)
 
                     strSOFTSERAPP_BATT = strtemp1.substring(strtemp1.indexOf(">")+1, strtemp1.indexOf("<")).c_str();
 
-                    Serial.printf("BATT.....%s V\n", strSOFTSERAPP_BATT.c_str());
+                    mcSerial.printf("BATT.....%s V\n", strSOFTSERAPP_BATT.c_str());
                 }
                 else
                     strSOFTSERAPP_BATT = "";
             }
 
             if(strSOFTSERAPP_FIXPEGEL.length() > 0)
-                Serial.printf("PEGEL(F).%s cm\n", strSOFTSERAPP_FIXPEGEL.c_str());
+                mcSerial.printf("PEGEL(F).%s cm\n", strSOFTSERAPP_FIXPEGEL.c_str());
             if(strSOFTSERAPP_FIXPEGEL.length() > 0)
-                Serial.printf("TEMP(F)..%s °C\n", strSOFTSERAPP_FIXTEMP.c_str());
+                mcSerial.printf("TEMP(F)..%s °C\n", strSOFTSERAPP_FIXTEMP.c_str());
 
             sendAPPPosition(meshcom_settings.node_lat, meshcom_settings.node_lat_c, meshcom_settings.node_lon, meshcom_settings.node_lon_c, meshcom_settings.node_temp2);
         
@@ -237,7 +237,7 @@ bool getSOFTSER()
             }
 
             if(bSOFTSERDEBUG)
-                Serial.print(c);
+                mcSerial.print(c);
 
             if((c < 0x20 || c > 0x7f) && c != 0x0d && c != 0x0a)
             {
@@ -272,7 +272,7 @@ bool sendSOFTSER(char cText[100])
     }
 
     if(bSOFTSERDEBUG)
-        Serial.printf("writeSOFTSER...<%s>\n", cText);
+        mcSerial.printf("writeSOFTSER...<%s>\n", cText);
 
     char cSend[100];
     

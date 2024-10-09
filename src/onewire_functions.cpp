@@ -12,11 +12,11 @@ OneWire ds;
 void PrintBytes(const uint8_t* addr, uint8_t count, bool newline=false)
 {
   for (uint8_t i = 0; i < count; i++) {
-    Serial.print(addr[i]>>4, HEX);
-    Serial.print(addr[i]&0x0f, HEX);
+    mcSerial.print(addr[i]>>4, HEX);
+    mcSerial.print(addr[i]&0x0f, HEX);
   }
   if (newline)
-    Serial.println();
+    mcSerial.println();
 }
 
 void init_onewire(void)
@@ -32,7 +32,7 @@ void init_onewire(void)
         }
     #endif
 
-    Serial.printf("[INIT]...ONEWIRE - GPIO:%i\n", meshcom_settings.node_owgpio);
+    mcSerial.printf("[INIT]...ONEWIRE - GPIO:%i\n", meshcom_settings.node_owgpio);
 
     if(meshcom_settings.node_owgpio > 0)
         ds.begin(meshcom_settings.node_owgpio);  // default on pin 36
@@ -69,8 +69,8 @@ void loop_onewire()
     {
         if(bWXDEBUG)
         {
-            Serial.println("No more OneWire addresses.");
-            Serial.println();
+            mcSerial.println("No more OneWire addresses.");
+            mcSerial.println();
         }
         ds.reset_search();
         delay(250);
@@ -79,23 +79,23 @@ void loop_onewire()
 
     if(bWXDEBUG)
     {
-        Serial.print("ROM =");
+        mcSerial.print("ROM =");
         for( i = 0; i < 8; i++)
         {
             Serial.write(' ');
-            Serial.print(addr[i], HEX);
+            mcSerial.print(addr[i], HEX);
         }
     }
 
     if (OneWire::crc8(addr, 7) != addr[7])
     {
-        Serial.println("OneWire CRC is not valid!");
+        mcSerial.println("OneWire CRC is not valid!");
         return;
     }
 
     if(bWXDEBUG)
     {
-        Serial.println();
+        mcSerial.println();
     }
 
     // the first ROM byte indicates which chip
@@ -103,22 +103,22 @@ void loop_onewire()
     {
         case 0x10:
             if(bWXDEBUG)
-                Serial.println("  Chip = DS18S20");  // or old DS1820
+                mcSerial.println("  Chip = DS18S20");  // or old DS1820
             //type_s = 1;
             break;
         case 0x28:
             if(bWXDEBUG)
-                Serial.println("  Chip = DS18B20");
+                mcSerial.println("  Chip = DS18B20");
             //type_s = 0;
             break;
         case 0x22:
             if(bWXDEBUG)
-                Serial.println("  Chip = DS1822");
+                mcSerial.println("  Chip = DS1822");
             //type_s = 0;
             break;
         default:
             if(bWXDEBUG)
-                Serial.println("Device is not a DS18x20 family device.");
+                mcSerial.println("Device is not a DS18x20 family device.");
             return;
     } 
 
@@ -135,17 +135,17 @@ void loop_onewire()
 
     if(bWXDEBUG)
     {
-        Serial.print("  Data = ");
-        Serial.print(present, HEX);
-        Serial.print(" ");
+        mcSerial.print("  Data = ");
+        mcSerial.print(present, HEX);
+        mcSerial.print(" ");
     }
     for ( i = 0; i < 9; i++)
     {           // we need 9 bytes
         data[i] = ds.read();
         if(bWXDEBUG)
         {
-            Serial.print(data[i], HEX);
-            Serial.print(" ");
+            mcSerial.print(data[i], HEX);
+            mcSerial.print(" ");
         }
     }
 
@@ -153,9 +153,9 @@ void loop_onewire()
 
     if(bWXDEBUG)
     {
-        Serial.print(" CRC=");
-        Serial.print(OneWire::crc8(data, 8), HEX);
-        Serial.println();
+        mcSerial.print(" CRC=");
+        mcSerial.print(OneWire::crc8(data, 8), HEX);
+        mcSerial.println();
     }
 
     // Convert the data to actual temperature
@@ -194,11 +194,11 @@ void loop_onewire()
 
     if(bWXDEBUG)
     {
-        Serial.print("  Temperature = ");
-        Serial.print(celsius);
-        Serial.print(" Celsius, ");
-        Serial.print(fahrenheit);
-        Serial.println(" Fahrenheit");
+        mcSerial.print("  Temperature = ");
+        mcSerial.print(celsius);
+        mcSerial.print(" Celsius, ");
+        mcSerial.print(fahrenheit);
+        mcSerial.println(" Fahrenheit");
     }
 
     meshcom_settings.node_temp2 = celsius;

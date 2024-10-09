@@ -93,7 +93,7 @@ void commandAction(char *msg_text, bool ble)
     bool bNodeSetting=false;
 
     if(bBLEDEBUG && ble)
-        Serial.printf("commandAction [%s] ble:%i\n", msg_text, ble);
+        mcSerial.printf("commandAction [%s] ble:%i\n", msg_text, ble);
 
     #ifdef ESP32
     if(memcmp(msg_text, "{", 1) == 0)
@@ -119,12 +119,12 @@ void commandAction(char *msg_text, bool ble)
             addBLECommandBack(print_buff);
         }
         else
-            Serial.printf("\nMeshCom %-4.4s%-1.1s Client\n...wrong command %s\n", SOURCE_VERSION, SOURCE_VERSION_SUB, msg_text);
+            mcSerial.printf("\nMeshCom %-4.4s%-1.1s Client\n...wrong command %s\n", SOURCE_VERSION, SOURCE_VERSION_SUB, msg_text);
 
         return;
     }
 
-    //Serial.printf("\nMeshCom %-4.4s%-1.1s Client\n...command %s\n", SOURCE_VERSION, SOURCE_VERSION_SUB, msg_text);
+    //mcSerial.printf("\nMeshCom %-4.4s%-1.1s Client\n...command %s\n", SOURCE_VERSION, SOURCE_VERSION_SUB, msg_text);
 
     /* TEST
     if(commandCheck(msg_text+2, (char*)"compress ") == 0)
@@ -146,7 +146,7 @@ void commandAction(char *msg_text, bool ble)
         // TODO: adapt node_time accordingly!
 
         if(bBLEDEBUG)
-            Serial.printf("[COMMAND]utcoff:%f\n", meshcom_settings.node_utcoff);
+            mcSerial.printf("[COMMAND]utcoff:%f\n", meshcom_settings.node_utcoff);
 
         if(ble)
         {
@@ -228,7 +228,7 @@ void commandAction(char *msg_text, bool ble)
     else
     if(commandCheck(msg_text+2, (char*)"setinfo off") == 0)
     {
-        Serial.println("\nsetinfo off");
+        mcSerial.println("\nsetinfo off");
 
         bDisplayInfo=false;
 
@@ -237,7 +237,7 @@ void commandAction(char *msg_text, bool ble)
     else
     if(commandCheck(msg_text+2, (char*)"setinfo on") == 0)
     {
-        Serial.println("\nsetinfo on");
+        mcSerial.println("\nsetinfo on");
 
         bDisplayInfo=true;
 
@@ -246,7 +246,7 @@ void commandAction(char *msg_text, bool ble)
     else
     if(commandCheck(msg_text+2, (char*)"shortpath off") == 0)
     {
-        Serial.println("\nshortpath off");
+        mcSerial.println("\nshortpath off");
 
         bSHORTPATH=false;
 
@@ -259,7 +259,7 @@ void commandAction(char *msg_text, bool ble)
     else
     if(commandCheck(msg_text+2, (char*)"shortpath on") == 0)
     {
-        Serial.println("\nshortpath on");
+        mcSerial.println("\nshortpath on");
 
         bSHORTPATH=true;
 
@@ -300,23 +300,23 @@ void commandAction(char *msg_text, bool ble)
         }
         else
         {
-            Serial.printf("MeshCom %s %-4.4s%-1.1s commands\n--setcall  set callsign (OE0XXX-1)\n--setctry 0-99 set RX/RX-LoRa-Parameter\n--setssid  WLAN SSID\n--setpwd   WLAN PASSWORD\n--wifiap on/off WLAN AP\n--reboot   Node reboot\n", SOURCE_TYPE, SOURCE_VERSION, SOURCE_VERSION_SUB);
+            mcSerial.printf("MeshCom %s %-4.4s%-1.1s commands\n--setcall  set callsign (OE0XXX-1)\n--setctry 0-99 set RX/RX-LoRa-Parameter\n--setssid  WLAN SSID\n--setpwd   WLAN PASSWORD\n--wifiap on/off WLAN AP\n--reboot   Node reboot\n", SOURCE_TYPE, SOURCE_VERSION, SOURCE_VERSION_SUB);
             delay(100);
-            Serial.printf("--pos      show lat/lon/alt/time info\n--weather  show temp/hum/press\n--sendpos  send pos info now\n--setlat   set latitude 44.12345\n--setlon   set logitude 016.12345\n--setalt   set altidude 9999m\n");
+            mcSerial.printf("--pos      show lat/lon/alt/time info\n--weather  show temp/hum/press\n--sendpos  send pos info now\n--setlat   set latitude 44.12345\n--setlon   set logitude 016.12345\n--setalt   set altidude 9999m\n");
             delay(100);
-            Serial.printf("--symid  set prim/sec Sym-Table\n--symcd  set table column\n--atxt   set APRS Textinfo\n--showI2C\n");
+            mcSerial.printf("--symid  set prim/sec Sym-Table\n--symcd  set table column\n--atxt   set APRS Textinfo\n--showI2C\n");
             delay(100);
-            Serial.printf("--debug    on/off\n--bledebug on/off\n--loradebug on/off\n--gpsdebug  on/off\n--softserdebug  on/off\n--wxdebug   on/off\n--display   on/off\n--setinfo   on/off\n--volt    show battery voltage\n--proz    show battery proz.\n");
+            mcSerial.printf("--debug    on/off\n--bledebug on/off\n--loradebug on/off\n--gpsdebug  on/off\n--softserdebug  on/off\n--wxdebug   on/off\n--display   on/off\n--setinfo   on/off\n--volt    show battery voltage\n--proz    show battery proz.\n");
             delay(100);
-            Serial.printf("--maxv    100% battery voltage\n--track   on/off SmartBeaconing\n--gps on/off use GPS-CHIP\n--utcoff +/-99.9 set UTC-Offset\n");
+            mcSerial.printf("--maxv    100% battery voltage\n--track   on/off SmartBeaconing\n--gps on/off use GPS-CHIP\n--utcoff +/-99.9 set UTC-Offset\n");
             delay(100);
-            Serial.printf("--gps reset Factory reset\n--txpower 99 LoRa TX-power dBm\n--txfreq  999.999 LoRa TX-freqency MHz\n--txbw    999 LoRa TX-bandwith kHz\n--lora    Show LoRa setting\n");
+            mcSerial.printf("--gps reset Factory reset\n--txpower 99 LoRa TX-power dBm\n--txfreq  999.999 LoRa TX-freqency MHz\n--txbw    999 LoRa TX-bandwith kHz\n--lora    Show LoRa setting\n");
             delay(100);
-            Serial.printf("--bmp on  use BMP280-CHIP\n--bme on  use BME280-CHIP\n--680 on  use BME680-CHIP\n--811 on  use CMCU811-CHIP\n--SMALL on  use small Display\n--SS on  use SS\n--bmx BME/BMP/680 off\n--onewire on/off  use DSxxxx\n--onewire gpio 99\n--lps33 on/off (RAK only)\n");
+            mcSerial.printf("--bmp on  use BMP280-CHIP\n--bme on  use BME280-CHIP\n--680 on  use BME680-CHIP\n--811 on  use CMCU811-CHIP\n--SMALL on  use small Display\n--SS on  use SS\n--bmx BME/BMP/680 off\n--onewire on/off  use DSxxxx\n--onewire gpio 99\n--lps33 on/off (RAK only)\n");
             delay(100);
-            Serial.printf("--info     show info\n--mheard   show MHeard\n--gateway on/off/pos/nopos\n--webserver on/off\n--mesh    on/off\n--extudp  on/off\n--extser  on/off\n--extudpip 99.99.99.99\n");
+            mcSerial.printf("--info     show info\n--mheard   show MHeard\n--gateway on/off/pos/nopos\n--webserver on/off\n--mesh    on/off\n--extudp  on/off\n--extser  on/off\n--extudpip 99.99.99.99\n");
             delay(100);
-            Serial.printf("--softser on/off/send/app/baud/fixpegel/fixtemp\n");
+            mcSerial.printf("--softser on/off/send/app/baud/fixpegel/fixtemp\n");
         }
 
         return;
@@ -329,7 +329,7 @@ void commandAction(char *msg_text, bool ble)
     else
     if(commandCheck(msg_text+2, (char*)"all") == 0)
     {
-        Serial.println("all on");
+        mcSerial.println("all on");
 
         bPosDisplay=true;
 
@@ -347,7 +347,7 @@ void commandAction(char *msg_text, bool ble)
     else
     if(commandCheck(msg_text+2, (char*)"msg") == 0)
     {
-        Serial.println("msg on");
+        mcSerial.println("msg on");
 
         bPosDisplay=false;
         
@@ -584,7 +584,7 @@ void commandAction(char *msg_text, bool ble)
         // BMx280 and BME680 share same addresses - only one can be used
         if(bBME680ON)
         {
-            Serial.println("BME680 and BMx280 can't be used together!");
+            mcSerial.println("BME680 and BMx280 can't be used together!");
             return; 
         }
 
@@ -607,7 +607,7 @@ void commandAction(char *msg_text, bool ble)
         // BMx280 and BME680 share same addresses - only one can be used
         if(bBME680ON)
         {
-            Serial.println("BME680 and BMx280 can't be used together!");
+            mcSerial.println("BME680 and BMx280 can't be used together!");
             return; 
         }
 
@@ -630,7 +630,7 @@ void commandAction(char *msg_text, bool ble)
         // BMx280 and BME680 share same addresses - only one can be used
         if(bBMPON || bBMEON)
         {
-            Serial.println("BME680 and BMx280 can't be used together!");
+            mcSerial.println("BME680 and BMx280 can't be used together!");
             return; 
         }
 
@@ -812,12 +812,12 @@ void commandAction(char *msg_text, bool ble)
         // Pin 2 is used for powering peripherals on RAK4630
         #ifdef BOARD_RAK4630
         if(meshcom_settings.node_owgpio == 2){
-            Serial.println("GPIO 2 not supported on RAK4630");
+            mcSerial.println("GPIO 2 not supported on RAK4630");
             return;
         }
         #endif
 
-        Serial.printf("\nonewire gpio:%i\n", meshcom_settings.node_owgpio);
+        mcSerial.printf("\nonewire gpio:%i\n", meshcom_settings.node_owgpio);
 
         /*
         if(ble)
@@ -847,7 +847,7 @@ void commandAction(char *msg_text, bool ble)
         fBaseAltidude = (float)meshcom_settings.node_alt;
         fBasePress = meshcom_settings.node_press;
 
-        Serial.printf("\nBase Press set to: %.1f at %.1f m\n", fBasePress, fBaseAltidude);
+        mcSerial.printf("\nBase Press set to: %.1f at %.1f m\n", fBasePress, fBaseAltidude);
 
         if(ble)
         {
@@ -1400,7 +1400,7 @@ void commandAction(char *msg_text, bool ble)
 
         sprintf(meshcom_settings.node_short, "%s", convertCallToShort(meshcom_settings.node_call).c_str());
 
-        Serial.printf("Call:%s Short:%s set\n", meshcom_settings.node_call, meshcom_settings.node_short);
+        mcSerial.printf("Call:%s Short:%s set\n", meshcom_settings.node_call, meshcom_settings.node_short);
 
         save_settings();
 
@@ -1425,7 +1425,7 @@ void commandAction(char *msg_text, bool ble)
 
         if(strlen(meshcom_settings.node_pwd) > 4)
         {
-            Serial.println("Auto. Reboot after 15 sec.");
+            mcSerial.println("Auto. Reboot after 15 sec.");
 
             rebootAuto = millis() + 15 * 1000; // 15 Sekunden
         }
@@ -1449,7 +1449,7 @@ void commandAction(char *msg_text, bool ble)
 
         if(strlen(meshcom_settings.node_ssid) > 4)
         {
-            Serial.println("Auto. Reboot after 15 sec.");
+            mcSerial.println("Auto. Reboot after 15 sec.");
 
             rebootAuto = millis() + 15 * 1000; // 10 Sekunden
         }
@@ -1589,7 +1589,7 @@ void commandAction(char *msg_text, bool ble)
 
         meshcom_settings.node_alt=iVar;
 
-        Serial.printf("set alt to %i m\n", meshcom_settings.node_alt);
+        mcSerial.printf("set alt to %i m\n", meshcom_settings.node_alt);
 
         if(ble)
         {
@@ -1643,7 +1643,7 @@ void commandAction(char *msg_text, bool ble)
 
             int mask = 0x0001 << iVar;
 
-            //Serial.printf("mask:%02X %02X meshcom_settings.node_mcp17io:%02X meshcom_settings.node_mcp17out:%04X\n", mask, (mask ^ 0xFFFF), meshcom_settings.node_mcp17io, meshcom_settings.node_mcp17out);
+            //mcSerial.printf("mask:%02X %02X meshcom_settings.node_mcp17io:%02X meshcom_settings.node_mcp17out:%04X\n", mask, (mask ^ 0xFFFF), meshcom_settings.node_mcp17io, meshcom_settings.node_mcp17out);
 
             if((meshcom_settings.node_mcp17io & mask) > 0)   // check PIN set to OUTPUT
             {
@@ -1653,7 +1653,7 @@ void commandAction(char *msg_text, bool ble)
                 
                 strsep.toUpperCase();
 
-                //Serial.printf("strsep:%s\n", strsep.c_str());
+                //mcSerial.printf("strsep:%s\n", strsep.c_str());
 
                 if(strsep.startsWith("ON"))
                 {
@@ -1761,7 +1761,7 @@ void commandAction(char *msg_text, bool ble)
 
             if(bSet)
             {
-                Serial.printf("set io[%i] %s to mask[%04X]\n", iVar, meshcom_settings.node_mcp17t[iVar], meshcom_settings.node_mcp17io);
+                mcSerial.printf("set io[%i] %s to mask[%04X]\n", iVar, meshcom_settings.node_mcp17t[iVar], meshcom_settings.node_mcp17io);
 
                 if(ble)
                 {
@@ -1794,13 +1794,13 @@ void commandAction(char *msg_text, bool ble)
 
         if(getCountry(iVar) == "none")
         {
-            Serial.printf("Country not allowed <%i>\n", iVar);
+            mcSerial.printf("Country not allowed <%i>\n", iVar);
         }
         else
         {
             meshcom_settings.node_country=iVar;
 
-            Serial.printf("set country to %i <%s>\n", meshcom_settings.node_country, getCountry(iVar).c_str());
+            mcSerial.printf("set country to %i <%s>\n", meshcom_settings.node_country, getCountry(iVar).c_str());
 
             if(ble)
             {
@@ -1813,7 +1813,7 @@ void commandAction(char *msg_text, bool ble)
             
             save_settings();
 
-            Serial.println("Auto. Reboot after 15 sec.");
+            mcSerial.println("Auto. Reboot after 15 sec.");
 
             rebootAuto = millis() + 15 * 1000; // 15 Sekunden
         }
@@ -1828,13 +1828,13 @@ void commandAction(char *msg_text, bool ble)
 
         if(iVar < TX_POWER_MIN || iVar > TX_POWER_MAX)
         {
-            Serial.printf("txpower %i dBm not between %i and max %i dBm\n", iVar, TX_POWER_MIN, TX_POWER_MAX);
+            mcSerial.printf("txpower %i dBm not between %i and max %i dBm\n", iVar, TX_POWER_MIN, TX_POWER_MAX);
         }
         else
         {
             meshcom_settings.node_power=iVar;
 
-            Serial.printf("set txpower to %i dBm\n", meshcom_settings.node_power);
+            mcSerial.printf("set txpower to %i dBm\n", meshcom_settings.node_power);
 
             if(ble)
             {
@@ -1844,7 +1844,7 @@ void commandAction(char *msg_text, bool ble)
 
             save_settings();
 
-            Serial.println("Auto. Reboot after 15 sec.");
+            mcSerial.println("Auto. Reboot after 15 sec.");
 
             rebootAuto = millis() + 15 * 1000; // 15 Sekunden
         }
@@ -1860,11 +1860,11 @@ void commandAction(char *msg_text, bool ble)
         float dec_bandwith = (LORA_BANDWIDTH/2.0)/100.0;
         if(!((fVar >= (430.0 + dec_bandwith) && fVar <= (439.000 - dec_bandwith)) || (fVar >= (869.4 + dec_bandwith) && fVar <= (869.65 - dec_bandwith))))
         {
-            Serial.printf("txfrequency %.3f MHz not within Band\n", fVar);
+            mcSerial.printf("txfrequency %.3f MHz not within Band\n", fVar);
         }
         else
         {
-            Serial.printf("set txfrequency to %.4f MHz\n", fVar);
+            mcSerial.printf("set txfrequency to %.4f MHz\n", fVar);
 
             meshcom_settings.node_freq=fVar;
 
@@ -1879,7 +1879,7 @@ void commandAction(char *msg_text, bool ble)
 
             save_settings();
 
-            Serial.println("Auto. Reboot after 15 sec.");
+            mcSerial.println("Auto. Reboot after 15 sec.");
 
             rebootAuto = millis() + 15 * 1000; // 15 Sekunden
         }
@@ -1894,13 +1894,13 @@ void commandAction(char *msg_text, bool ble)
 
         if(fVar != 125 && fVar != 250)
         {
-            Serial.printf("txbw %.0f MHz not 125 or 250 kHz\n", fVar);
+            mcSerial.printf("txbw %.0f MHz not 125 or 250 kHz\n", fVar);
         }
         else
         {
             meshcom_settings.node_bw=fVar;
 
-            Serial.printf("set txbw to %f kHz\n", meshcom_settings.node_bw);
+            mcSerial.printf("set txbw to %f kHz\n", meshcom_settings.node_bw);
 
             if(ble)
             {
@@ -1909,7 +1909,7 @@ void commandAction(char *msg_text, bool ble)
 
             save_settings();
 
-            Serial.println("Auto. Reboot after 15 sec.");
+            mcSerial.println("Auto. Reboot after 15 sec.");
 
             rebootAuto = millis() + 15 * 1000; // 15 Sekunden
         }
@@ -1924,13 +1924,13 @@ void commandAction(char *msg_text, bool ble)
 
         if(iVar < 6 || iVar > 12)
         {
-            Serial.printf("txsf %i only 6 to 12\n", iVar);
+            mcSerial.printf("txsf %i only 6 to 12\n", iVar);
         }
         else
         {
             meshcom_settings.node_sf=iVar;
 
-            Serial.printf("set txsf to %i\n", meshcom_settings.node_sf);
+            mcSerial.printf("set txsf to %i\n", meshcom_settings.node_sf);
 
             if(ble)
             {
@@ -1939,7 +1939,7 @@ void commandAction(char *msg_text, bool ble)
 
             save_settings();
 
-            Serial.println("Auto. Reboot after 15 sec.");
+            mcSerial.println("Auto. Reboot after 15 sec.");
 
             rebootAuto = millis() + 15 * 1000; // 15 Sekunden
         }
@@ -1954,13 +1954,13 @@ void commandAction(char *msg_text, bool ble)
 
         if(iVar < 4 || iVar > 6)
         {
-            Serial.printf("txcr %i only 4 to 6\n", iVar);
+            mcSerial.printf("txcr %i only 4 to 6\n", iVar);
         }
         else
         {
             meshcom_settings.node_cr=iVar;
 
-            Serial.printf("set txcr to %i\n", meshcom_settings.node_cr);
+            mcSerial.printf("set txcr to %i\n", meshcom_settings.node_cr);
 
             if(ble)
             {
@@ -1969,7 +1969,7 @@ void commandAction(char *msg_text, bool ble)
 
             save_settings();
 
-            Serial.println("Auto. Reboot after 15 sec.");
+            mcSerial.println("Auto. Reboot after 15 sec.");
 
             rebootAuto = millis() + 15 * 1000; // 15 Sekunden
         }
@@ -2097,11 +2097,11 @@ void commandAction(char *msg_text, bool ble)
     
         if(checkRegexCall(strCallSign))
         {
-            Serial.printf("\n%s match\n", strCallSign.c_str());
+            mcSerial.printf("\n%s match\n", strCallSign.c_str());
         }
         else
         {
-            Serial.printf("\n%s no match\n", strCallSign.c_str());
+            mcSerial.printf("\n%s no match\n", strCallSign.c_str());
         }
 
         return;
@@ -2140,7 +2140,7 @@ void commandAction(char *msg_text, bool ble)
         }
         else
         {
-            Serial.printf("\n\nMeshCom %s %-4.4s%-1.1s\n...BME(P)280: %s\n...BME680: %s\n...MCU811: %s\n...INA226: %s\n...LPS33: %s (RAK)\n...ONEWIRE: %s (%i)\n...TEMP: %.1f °C\n...TOUT: %.1f °C\n...HUM: %.1f%% rH\n...QFE: %.1f hPa\n...QNH: %.1f hPa\n...ALT asl: %i m\n...GAS: %.1f kOhm\n...eCO2: %.0f ppm\n", SOURCE_TYPE, SOURCE_VERSION, SOURCE_VERSION_SUB,
+            mcSerial.printf("\n\nMeshCom %s %-4.4s%-1.1s\n...BME(P)280: %s\n...BME680: %s\n...MCU811: %s\n...INA226: %s\n...LPS33: %s (RAK)\n...ONEWIRE: %s (%i)\n...TEMP: %.1f °C\n...TOUT: %.1f °C\n...HUM: %.1f%% rH\n...QFE: %.1f hPa\n...QNH: %.1f hPa\n...ALT asl: %i m\n...GAS: %.1f kOhm\n...eCO2: %.0f ppm\n", SOURCE_TYPE, SOURCE_VERSION, SOURCE_VERSION_SUB,
             (bBMEON?"on":"off"), (bBME680ON?"on":"off"), (bMCU811ON?"on":"off"), (bINA226ON?"on":"off"), (bLPS33?"on":"off"), (bONEWIRE?"on":"off"), meshcom_settings.node_owgpio, meshcom_settings.node_temp, meshcom_settings.node_temp2, meshcom_settings.node_hum, meshcom_settings.node_press, meshcom_settings.node_press_asl, meshcom_settings.node_press_alt, meshcom_settings.node_gas_res, meshcom_settings.node_co2);
 
         }
@@ -2155,7 +2155,7 @@ void commandAction(char *msg_text, bool ble)
         }
         else
         {
-            Serial.printf("\n\nMeshCom %s %-4.4s%-1.1s\n...MCP17 %s\n", SOURCE_TYPE, SOURCE_VERSION, SOURCE_VERSION_SUB,  (bMCP23017?"on":"off"));
+            mcSerial.printf("\n\nMeshCom %s %-4.4s%-1.1s\n...MCP17 %s\n", SOURCE_TYPE, SOURCE_VERSION, SOURCE_VERSION_SUB,  (bMCP23017?"on":"off"));
             
             uint16_t t_io = meshcom_settings.node_mcp17io;
             uint16_t t_out = meshcom_settings.node_mcp17out;
@@ -2176,14 +2176,14 @@ void commandAction(char *msg_text, bool ble)
                     bInValue=true;
 
                 if(io < 8)
-                    Serial.printf("...MCP17[A%i]: %-3.3s", io, (bOut?"OUT":"IN"));
+                    mcSerial.printf("...MCP17[A%i]: %-3.3s", io, (bOut?"OUT":"IN"));
                 else
-                    Serial.printf("...MCP17[B%i]: %-3.3s", io-8, (bOut?"OUT":"IN"));
+                    mcSerial.printf("...MCP17[B%i]: %-3.3s", io-8, (bOut?"OUT":"IN"));
 
                 if(bOut)
-                    Serial.printf(" value %s %s\n", (bOutValue?"ON  ":"OFF "), meshcom_settings.node_mcp17t[io]);
+                    mcSerial.printf(" value %s %s\n", (bOutValue?"ON  ":"OFF "), meshcom_settings.node_mcp17t[io]);
                 else
-                    Serial.printf(" value %s %s\n", (bInValue?"HIGH":"LOW "), meshcom_settings.node_mcp17t[io]);
+                    mcSerial.printf(" value %s %s\n", (bInValue?"HIGH":"LOW "), meshcom_settings.node_mcp17t[io]);
 
                 t_io = t_io >> 1;
                 t_out = t_out >> 1;
@@ -2239,12 +2239,12 @@ void commandAction(char *msg_text, bool ble)
         }
         else
         {
-            Serial.printf("--MeshCom %s %-4.4s%-1.1s\n...Call:  <%s> ...ID %08X ...NODE %i ...UTC-OFF %f\n...BATT %.2f V ...BATT %d %% ...MAXV %.2f V\n...TIME %li ms\n...GATEWAY %s %s ...MESH %s ...WEBSERVER %s ...BUTTON  %s ... SS %s\n...PASSWD %s\n",
+            mcSerial.printf("--MeshCom %s %-4.4s%-1.1s\n...Call:  <%s> ...ID %08X ...NODE %i ...UTC-OFF %f\n...BATT %.2f V ...BATT %d %% ...MAXV %.2f V\n...TIME %li ms\n...GATEWAY %s %s ...MESH %s ...WEBSERVER %s ...BUTTON  %s ... SS %s\n...PASSWD %s\n",
                     SOURCE_TYPE, SOURCE_VERSION, SOURCE_VERSION_SUB,
                     meshcom_settings.node_call, _GW_ID, BOARD_HARDWARE, meshcom_settings.node_utcoff, global_batt/1000.0, global_proz, meshcom_settings.node_maxv , millis(), 
                     (bGATEWAY?"on":"off"), (bGATEWAY_NOPOS?"nopos":""), (bMESH?"on":"off"), (bWEBSERVER?"on":"off"), (bButtonCheck?"on":"off"), (bSOFTSERON?"on":"off"), meshcom_settings.node_passwd);
 
-            Serial.printf("...DEBUG %s ...LORADEBUG %s ...GPSDEBUG  %s ...SOFTSERDEBUG  %s ...WXDEBUG %s ... BLEDEBUG %s\n...EXTUDP  %s  ...EXTSERUDP  %s  ...EXT IP  %s\n...ATXT: %s\n...BLE : %s\n...DISP: %s\n...CTRY %s\n...FREQ %.4f MHz TXPWR %i dBm\n",
+            mcSerial.printf("...DEBUG %s ...LORADEBUG %s ...GPSDEBUG  %s ...SOFTSERDEBUG  %s ...WXDEBUG %s ... BLEDEBUG %s\n...EXTUDP  %s  ...EXTSERUDP  %s  ...EXT IP  %s\n...ATXT: %s\n...BLE : %s\n...DISP: %s\n...CTRY %s\n...FREQ %.4f MHz TXPWR %i dBm\n",
                     (bDEBUG?"on":"off"), (bLORADEBUG?"on":"off"), (bGPSDEBUG?"on":"off"), (bSOFTSERDEBUG?"on":"off"),
                     (bWXDEBUG?"on":"off"), (bBLEDEBUG?"on":"off"), (bEXTUDP?"on":"off"), (bEXTSER?"on":"off"), meshcom_settings.node_extern, meshcom_settings.node_atxt, (bBLElong?"long":"short"), (bSMALLDISPLAY?"small":"normal"),
                     getCountry(meshcom_settings.node_country).c_str() , getFreq(), getPower());
@@ -2252,54 +2252,54 @@ void commandAction(char *msg_text, bool ble)
             for(int ig=0;ig<6;ig++)
             {
                 if(meshcom_settings.node_gcb[ig] > 0)
-                    Serial.printf("...GC [%2i] %4i\n", ig+1, meshcom_settings.node_gcb[ig]);
+                    mcSerial.printf("...GC [%2i] %4i\n", ig+1, meshcom_settings.node_gcb[ig]);
             }
 
             if(bSOFTSERON && meshcom_settings.node_ss_baud > 0)
             {
-                Serial.printf("\n...SS RX   %2i\n", meshcom_settings.node_ss_rx_pin);
-                Serial.printf("...SS TX   %2i\n", meshcom_settings.node_ss_tx_pin);
-                Serial.printf("...SS BAUD %i\n", meshcom_settings.node_ss_baud);
+                mcSerial.printf("\n...SS RX   %2i\n", meshcom_settings.node_ss_rx_pin);
+                mcSerial.printf("...SS TX   %2i\n", meshcom_settings.node_ss_tx_pin);
+                mcSerial.printf("...SS BAUD %i\n", meshcom_settings.node_ss_baud);
             }
 
-            Serial.println("");
+            mcSerial.println("");
 
             if(bINA226ON)
             {
-                Serial.printf("INA226\n");
-                Serial.printf("...vBUS     %.2f V\n", meshcom_settings.node_vbus);
-                Serial.printf("...vSHUNT   %.2f mV\n", meshcom_settings.node_vshunt);
-                Serial.printf("...vCURRENT %.1f mA\n", meshcom_settings.node_vcurrent);
-                Serial.printf("...vPOWER   %.1f mW\n", meshcom_settings.node_vpower);
-                Serial.println("");
+                mcSerial.printf("INA226\n");
+                mcSerial.printf("...vBUS     %.2f V\n", meshcom_settings.node_vbus);
+                mcSerial.printf("...vSHUNT   %.2f mV\n", meshcom_settings.node_vshunt);
+                mcSerial.printf("...vCURRENT %.1f mA\n", meshcom_settings.node_vcurrent);
+                mcSerial.printf("...vPOWER   %.1f mW\n", meshcom_settings.node_vpower);
+                mcSerial.println("");
             }
 
             #ifndef BOARD_RAK4630
-                Serial.printf("...WIFI-AP  %s\n", (bWIFIAP?"yes":"no"));
+                mcSerial.printf("...WIFI-AP  %s\n", (bWIFIAP?"yes":"no"));
                 if(bWIFIAP)
                 {
-                    Serial.printf("...SSID     %s\n", cBLEName);
-                    Serial.printf("...PASSWORD <>\n");
+                    mcSerial.printf("...SSID     %s\n", cBLEName);
+                    mcSerial.printf("...PASSWORD <>\n");
                 }
                 else
                 {
-                    Serial.printf("...SSID     %s\n", meshcom_settings.node_ssid);
-                    Serial.printf("...PASSWORD %s\n", meshcom_settings.node_pwd);
+                    mcSerial.printf("...SSID     %s\n", meshcom_settings.node_ssid);
+                    mcSerial.printf("...PASSWORD %s\n", meshcom_settings.node_pwd);
                 }
             #endif
-            Serial.printf("...hasIpAddress: %s\n", (meshcom_settings.node_hasIPaddress?"yes":"no"));
+            mcSerial.printf("...hasIpAddress: %s\n", (meshcom_settings.node_hasIPaddress?"yes":"no"));
             if(meshcom_settings.node_hasIPaddress)
             {
-                Serial.printf("...IP address  : %s\n", meshcom_settings.node_ip);
+                mcSerial.printf("...IP address  : %s\n", meshcom_settings.node_ip);
                 if(!bWIFIAP)
                 {
-                    Serial.printf("...GW address  : %s\n", meshcom_settings.node_gw);
-                    Serial.printf("...DNS address : %s\n", meshcom_settings.node_dns);
+                    mcSerial.printf("...GW address  : %s\n", meshcom_settings.node_gw);
+                    mcSerial.printf("...DNS address : %s\n", meshcom_settings.node_dns);
                 }
-                Serial.printf("...SUBNET-MASK : %s\n", meshcom_settings.node_subnet);
+                mcSerial.printf("...SUBNET-MASK : %s\n", meshcom_settings.node_subnet);
     
                 if(!bWIFIAP)
-                    Serial.printf("...UDP-HBeat   : %ld\n", millis() - meshcom_settings.node_last_upd_timer);
+                    mcSerial.printf("...UDP-HBeat   : %ld\n", millis() - meshcom_settings.node_last_upd_timer);
             }
     
             sendDisplayHead(false);

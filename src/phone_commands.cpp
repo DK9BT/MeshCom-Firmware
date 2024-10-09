@@ -77,7 +77,7 @@ void sendConfigToPhone ()
 	}
 
 	if(bBLEDEBUG)
-		Serial.println("Comment Len: " + String(comment_len) + " Comment: " + String(meshcom_settings.node_atxt) + " Comment StrLen: " + String(strlen(meshcom_settings.node_atxt)));
+		mcSerial.println("Comment Len: " + String(comment_len) + " Comment: " + String(meshcom_settings.node_atxt) + " Comment StrLen: " + String(strlen(meshcom_settings.node_atxt)));
 
 	
 	uint8_t conf_len = call_len + ssid_len + pwd_len + comment_len + 44;	// +9 because of APRS Symbols 2B, Settings 4B, till FRQ and 0x00 end
@@ -142,7 +142,7 @@ void sendConfigToPhone ()
 	memcpy(confBuff + aprs_symbols_offset + 2, &meshcom_settings.node_symcd, 1);
 
 	if(bBLEDEBUG)
-		Serial.printf("Sym ID: %c Sym CD: %c\n", meshcom_settings.node_symid, meshcom_settings.node_symcd);
+		mcSerial.printf("Sym ID: %c Sym CD: %c\n", meshcom_settings.node_symid, meshcom_settings.node_symcd);
 
 	// Settings
 	gw_cl_offset = aprs_symbols_offset + 3;
@@ -283,7 +283,7 @@ void sendToPhone()
 			toPhoneRead = 0;
 
 		if(bBLEDEBUG)
-			Serial.printf("toPhoneWrite:%i toPhoneRead:%i buff:%s\n", toPhoneWrite, toPhoneRead, toPhoneBuff+7); //TODO
+			mcSerial.printf("toPhoneWrite:%i toPhoneRead:%i buff:%s\n", toPhoneWrite, toPhoneRead, toPhoneBuff+7); //TODO
     }
     
     ble_busy_flag = false;
@@ -342,7 +342,7 @@ void sendComToPhone()
 			ComToPhoneRead = 0;
 
 		if(bBLEDEBUG)
-			Serial.printf("ComToPhoneWrite:%i ComToPhoneRead:%i buff:%s\n", ComToPhoneWrite, ComToPhoneRead, ComToPhoneBuff+7);
+			mcSerial.printf("ComToPhoneWrite:%i ComToPhoneRead:%i buff:%s\n", ComToPhoneWrite, ComToPhoneRead, ComToPhoneBuff+7);
     }
     
     ble_busy_flag = false;
@@ -394,7 +394,7 @@ void readPhoneCommand(uint8_t conf_data[MAX_MSG_LEN_PHONE])
 	if(bBLEDEBUG)
 	{
 		printBuffer(conf_data, msg_len);
-		Serial.println();
+		mcSerial.println();
 	}
 
 	// get save settings flag if position setting
@@ -405,7 +405,7 @@ void readPhoneCommand(uint8_t conf_data[MAX_MSG_LEN_PHONE])
 		if(conf_data[6] == 0x0B)  save_setting = false;
 	}
 
-	//Serial.printf("msg_type:%02x\n", msg_type);
+	//mcSerial.printf("msg_type:%02x\n", msg_type);
 
 	switch (msg_type)
 	{
@@ -416,7 +416,7 @@ void readPhoneCommand(uint8_t conf_data[MAX_MSG_LEN_PHONE])
 				//sendConfigToPhone(); // config data comes now via JSONs from main loop and commandfunctions
 
 				if(bBLEDEBUG)
-					Serial.println("BLE Hello Msg from phone");
+					mcSerial.println("BLE Hello Msg from phone");
 				
 				isPhoneReady = 1;
 			}
@@ -446,8 +446,8 @@ void readPhoneCommand(uint8_t conf_data[MAX_MSG_LEN_PHONE])
 
 			if (bBLEDEBUG)
 			{
-				Serial.printf("Timestamp from phone <UTC>: %u\n", timestamp);
-				Serial.printf("Date <UTC>: %02d.%02d.%04d %02d:%02d:%02d\n", meshcom_settings.node_date_day, meshcom_settings.node_date_month, meshcom_settings.node_date_year, meshcom_settings.node_date_hour, meshcom_settings.node_date_minute, meshcom_settings.node_date_second);
+				mcSerial.printf("Timestamp from phone <UTC>: %u\n", timestamp);
+				mcSerial.printf("Date <UTC>: %02d.%02d.%04d %02d:%02d:%02d\n", meshcom_settings.node_date_day, meshcom_settings.node_date_month, meshcom_settings.node_date_year, meshcom_settings.node_date_hour, meshcom_settings.node_date_minute, meshcom_settings.node_date_second);
 			}
 
 			break;
@@ -482,8 +482,8 @@ void readPhoneCommand(uint8_t conf_data[MAX_MSG_LEN_PHONE])
 				
 				if(bBLEDEBUG)
 				{
-					Serial.print("helper_string:");
-					Serial.println(helper_string);
+					mcSerial.print("helper_string:");
+					mcSerial.println(helper_string);
 				}
 
 				Bluefruit.setName(helper_string);
@@ -566,7 +566,7 @@ void readPhoneCommand(uint8_t conf_data[MAX_MSG_LEN_PHONE])
 			char aprs_symbol = conf_data[3];
 
 			if(bBLEDEBUG)
-				Serial.printf("aprs_pri_sec:%c aprs_symbol:%c\n", aprs_pri_sec, aprs_symbol);
+				mcSerial.printf("aprs_pri_sec:%c aprs_symbol:%c\n", aprs_pri_sec, aprs_symbol);
 
 			if(aprs_pri_sec == 0x2f || aprs_pri_sec == 0x5c)
 			{
@@ -585,7 +585,7 @@ void readPhoneCommand(uint8_t conf_data[MAX_MSG_LEN_PHONE])
 			txt_msg_len_phone = msg_len - 2;	// now zero escape for lora TX
 
 			if(ble_busy_flag && bBLEDEBUG)
-				Serial.println("BLE is busy. Waiting...");
+				mcSerial.println("BLE is busy. Waiting...");
 
 			while(ble_busy_flag)
 			{
@@ -593,7 +593,7 @@ void readPhoneCommand(uint8_t conf_data[MAX_MSG_LEN_PHONE])
 			}
 
 			if (bBLEDEBUG)
-				Serial.printf("Text from phone: %s\n", conf_data + 2);
+				mcSerial.printf("Text from phone: %s\n", conf_data + 2);
 
 			// kopieren der message in buffer fuer main
 			memcpy(textbuff_phone, conf_data + 2, txt_msg_len_phone);
@@ -630,7 +630,7 @@ void readPhoneCommand(uint8_t conf_data[MAX_MSG_LEN_PHONE])
 				sprintf(meshcom_settings.node_pwd, "%s", s_PWD.c_str());
 
 				if(bBLEDEBUG)
-					Serial.println("Wifi Setting from phone set");
+					mcSerial.println("Wifi Setting from phone set");
 				
 				// Node will reset after saving settings. Settings back are coming on ble reconnect.
 
@@ -641,7 +641,7 @@ void readPhoneCommand(uint8_t conf_data[MAX_MSG_LEN_PHONE])
 		case 0xF0: {
 			
 			if(bBLEDEBUG)
-				Serial.println("Save Settings");
+				mcSerial.println("Save Settings");
 			
 			//Save Settings
 

@@ -75,10 +75,10 @@ void startWebserver()
     // - second argument is the IP address to advertise
     //   we send our IP address on the WiFi network
     if (!MDNS.begin(meshcom_settings.node_call)) {
-        Serial.println("Error setting up MDNS responder!");
+        mcSerial.println("Error setting up MDNS responder!");
         return;
     }
-    Serial.println("mDNS responder started");
+    mcSerial.println("mDNS responder started");
 #endif
 
     web_server.begin();
@@ -120,7 +120,7 @@ void loopWebserver()
     web_previousTime = web_currentTime;
 
     if(bDEBUG)
-        Serial.println("New Client.");          // print a message out in the serial port
+        mcSerial.println("New Client.");          // print a message out in the serial port
 
     String web_currentLine = "";                // make a String to hold incoming data from the client
 
@@ -577,7 +577,7 @@ void loopWebserver()
                     char* command = strtok(cListen, "&");
                     while (command != 0)
                     {
-                        //Serial.printf("command:%s\n", command);
+                        //mcSerial.printf("command:%s\n", command);
                         
                         // Split the command in two values
                         char* separator = strchr(command, '=');
@@ -610,7 +610,7 @@ void loopWebserver()
                     char* command = strtok(cListen, "&");
                     while (command != 0)
                     {
-                        //Serial.printf("command:%s\n", command);
+                        //mcSerial.printf("command:%s\n", command);
                         
                         // Split the command in two values
                         char* separator = strchr(command, '=');
@@ -1222,12 +1222,12 @@ void loopWebserver()
                     web_client.println("<tr><th>last messages</th><th colspan=\"3\"></th></tr>");
 
                     if(bDEBUG)
-                        Serial.printf("toPhoneWrite:%i toPhoneRead:%i\n", toPhoneWrite, toPhoneRead);
+                        mcSerial.printf("toPhoneWrite:%i toPhoneRead:%i\n", toPhoneWrite, toPhoneRead);
 
                     while(toPhoneWrite != iRead)
                     {
                         if(bDEBUG)
-                            Serial.printf("iRead:%i [1]:%02X\n", iRead, BLEtoPhoneBuff[iRead][1]);
+                            mcSerial.printf("iRead:%i [1]:%02X\n", iRead, BLEtoPhoneBuff[iRead][1]);
 
                         // we need to insert the first byte text msg flag
                         uint8_t toPhoneBuff [MAX_MSG_LEN_PHONE] = {0};
@@ -1265,7 +1265,7 @@ void loopWebserver()
 
                             strftime(timestamp, 20, "%Y-%m-%d %H:%M:%S", oldt);
                         
-                            //Serial.printf("Timestamp:<%s>\n", timestamp);
+                            //mcSerial.printf("Timestamp:<%s>\n", timestamp);
 
                             struct aprsMessage aprsmsg;
 
@@ -1291,7 +1291,7 @@ void loopWebserver()
                                 if(aprsmsg.msg_payload.indexOf(":ack") < 1)
                                 {
                                     if(bDEBUG)
-                                        Serial.printf("aprsmsg.msg_source_call.c_str():%s, aprsmsg.msg_gateway_call.c_str():%s, aprsmsg.msg_destination_call.c_str():%s, aprsmsg.msg_payload.c_str():%s\n", aprsmsg.msg_source_call.c_str(), aprsmsg.msg_source_last.c_str(), aprsmsg.msg_destination_call.c_str(), aprsmsg.msg_payload.c_str());
+                                        mcSerial.printf("aprsmsg.msg_source_call.c_str():%s, aprsmsg.msg_gateway_call.c_str():%s, aprsmsg.msg_destination_call.c_str():%s, aprsmsg.msg_payload.c_str():%s\n", aprsmsg.msg_source_call.c_str(), aprsmsg.msg_source_last.c_str(), aprsmsg.msg_destination_call.c_str(), aprsmsg.msg_payload.c_str());
 
                                     String msgtxt = aprsmsg.msg_payload;
                                     if(msgtxt.indexOf('{') > 0)
@@ -1783,8 +1783,8 @@ void loopWebserver()
   
     if(bDEBUG)
     {
-        Serial.println("Client disconnected.");
-        Serial.println("");
+        mcSerial.println("Client disconnected.");
+        mcSerial.println("");
     }
 }
 

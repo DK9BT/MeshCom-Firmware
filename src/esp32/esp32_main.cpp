@@ -70,6 +70,17 @@ extern XPowersLibInterface *PMU;
     extern U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2;
 #endif
 
+// Remote Debug
+// see: https://github.com/JoaoLopesF/RemoteDebug
+// Bugfix: #include <esp32/sha.h>
+#include "mc_serial.h"
+#include <RemoteDebug.h> 
+RemoteDebug Debug;
+
+
+
+
+
 /**
  * RadioLib Infos und Examples:
  * SX127x:
@@ -143,19 +154,19 @@ class MyServerCallbacks: public NimBLEServerCallbacks {
         config_to_phone_prepare = true;
         // set the config finish msg for phone at the end of the queue, so it comes after the offline TXT msgs
         commandAction((char*)"--conffin", true);
-        Serial.println("BLE connected");
+        mcSerial.println("BLE connected");
     };
 
     void onDisconnect(NimBLEServer* pServer)
     {
         deviceConnected = false;
-        Serial.println("BLE disconnected");
+        mcSerial.println("BLE disconnected");
     }
 
 	/***************** New - Security handled here ********************
 	****** Note: these are the same return values as defaults ********/
 	uint32_t onPassKeyRequest() {
-		Serial.printf("Server PassKeyRequest <%06i>\n", PIN);
+		mcSerial.printf("Server PassKeyRequest <%06i>\n", PIN);
 		return PIN;
 	}
 	/*******************************************************************/
@@ -242,7 +253,7 @@ void setFlagReceive(void)
         receiveFlag = true;
 
         if(bLORADEBUG)
-            Serial.println("receiveFlag");
+            mcSerial.println("receiveFlag");
     }
 
     if(bEnableInterruptTransmit)
@@ -250,7 +261,7 @@ void setFlagReceive(void)
         transmittedFlag = true;
 
         if(bLORADEBUG)
-            Serial.println("transmittedFlag");
+            mcSerial.println("transmittedFlag");
     }
 }
 
@@ -264,7 +275,7 @@ void setFlagSent(void)
         receiveFlag = true;
 
         if(bLORADEBUG)
-            Serial.println("receiveFlag");
+            mcSerial.println("receiveFlag");
     }
 
     if(bEnableInterruptTransmit)
@@ -272,7 +283,7 @@ void setFlagSent(void)
         transmittedFlag = true;
 
         if(bLORADEBUG)
-            Serial.println("transmittedFlag");
+            mcSerial.println("transmittedFlag");
     }
 }
 
@@ -337,11 +348,11 @@ void esp32setup()
 
     delay(1500);
 
-    Serial.println("");
-    Serial.println("");
-    Serial.println("============");
-    Serial.println("CLIENT SETUP");
-    Serial.println("============");
+    mcSerial.println("");
+    mcSerial.println("");
+    mcSerial.println("============");
+    mcSerial.println("CLIENT SETUP");
+    mcSerial.println("============");
 
     // init nach Reboot
     init_loop_function();
@@ -509,7 +520,7 @@ void esp32setup()
 
     initButtonPin();
     
-    Serial.printf("[INIT]..._GW_ID: %08X\n", _GW_ID);
+    mcSerial.printf("[INIT]..._GW_ID: %08X\n", _GW_ID);
 
     ////////////////////////////////////////////////////////////////////
     // Initialize time
@@ -517,7 +528,7 @@ void esp32setup()
 	
 	// initialize clock
 	boResult = MyClock.Init();
-	Serial.printf("[INIT]...Initialize clock: %s\n", (boResult) ? "ok" : "FAILED");
+	mcSerial.printf("[INIT]...Initialize clock: %s\n", (boResult) ? "ok" : "FAILED");
 
     DisplayTimeWait=0;
     //
@@ -555,7 +566,7 @@ void esp32setup()
     bool bRadio=false;
 
      // initialize SX12xx with default settings
-    Serial.print(F("[INIT]...LoRa Modem Initializing ... "));
+    mcSerial.print(F("[INIT]...LoRa Modem Initializing ... "));
 
     int state = RADIOLIB_ERR_UNKNOWN;
     
@@ -567,13 +578,13 @@ void esp32setup()
     
     if (state == RADIOLIB_ERR_NONE)
     {
-        Serial.println(F("LoRa-Chip success!"));
+        mcSerial.println(F("LoRa-Chip success!"));
         bRadio=true;
     }
     else
     {
-        Serial.print(F("LoRa-Chip failed, code "));
-        Serial.println(state);
+        mcSerial.print(F("LoRa-Chip failed, code "));
+        mcSerial.println(state);
         bRadio=false;
     }
 
@@ -588,38 +599,38 @@ void esp32setup()
         lora_setcountry(meshcom_settings.node_country);
 
         // set carrier frequency
-        Serial.printf("[LoRa]...RF_FREQUENCY: %.3f MHz\n", meshcom_settings.node_freq);
+        mcSerial.printf("[LoRa]...RF_FREQUENCY: %.3f MHz\n", meshcom_settings.node_freq);
         if (radio.setFrequency(meshcom_settings.node_freq) == RADIOLIB_ERR_INVALID_FREQUENCY) {
-            Serial.println(F("Selected frequency is invalid for this module!"));
+            mcSerial.println(F("Selected frequency is invalid for this module!"));
             while (true);
         }
 
         // set bandwidth 
-        Serial.printf("[LoRa]...RF_BANDWIDTH: %.0f kHz\n", meshcom_settings.node_bw);
+        mcSerial.printf("[LoRa]...RF_BANDWIDTH: %.0f kHz\n", meshcom_settings.node_bw);
         if (radio.setBandwidth(meshcom_settings.node_bw) == RADIOLIB_ERR_INVALID_BANDWIDTH) {
-            Serial.println(F("Selected bandwidth is invalid for this module!"));
+            mcSerial.println(F("Selected bandwidth is invalid for this module!"));
             while (true);
         }
 
 
         // set spreading factor 
-        Serial.printf("[LoRa]...RF_SF: %i\n", meshcom_settings.node_sf);
+        mcSerial.printf("[LoRa]...RF_SF: %i\n", meshcom_settings.node_sf);
         if (radio.setSpreadingFactor(meshcom_settings.node_sf) == RADIOLIB_ERR_INVALID_SPREADING_FACTOR) {
-            Serial.println(F("Selected spreading factor is invalid for this module!"));
+            mcSerial.println(F("Selected spreading factor is invalid for this module!"));
             while (true);
         }
 
         // set coding rate 
-        Serial.printf("[LoRa]...RF_CR: 4/%i\n", meshcom_settings.node_cr);
+        mcSerial.printf("[LoRa]...RF_CR: 4/%i\n", meshcom_settings.node_cr);
         if (radio.setCodingRate(meshcom_settings.node_cr) == RADIOLIB_ERR_INVALID_CODING_RATE) {
-            Serial.println(F("Selected coding rate is invalid for this module!"));
+            mcSerial.println(F("Selected coding rate is invalid for this module!"));
             while (true);
         }
 
         // set LoRa sync word 
         // NOTE: value 0x34 is reserved for LoRaWAN networks and should not be used
         if (radio.setSyncWord(SYNC_WORD_SX127x) != RADIOLIB_ERR_NONE) {
-            Serial.println(F("Unable to set sync word!"));
+            mcSerial.println(F("Unable to set sync word!"));
             while (true);
         }
 
@@ -640,23 +651,23 @@ void esp32setup()
         if(tx_power < TX_POWER_MIN)
             tx_power= TX_POWER_MIN;
 
-        Serial.printf("[LoRa]...RF_POWER: %d dBm\n", tx_power);
+        mcSerial.printf("[LoRa]...RF_POWER: %d dBm\n", tx_power);
 
         if (radio.setOutputPower(tx_power) == RADIOLIB_ERR_INVALID_OUTPUT_POWER) {
-            Serial.println(F("Selected output power is invalid for this module!"));
+            mcSerial.println(F("Selected output power is invalid for this module!"));
             while (true);
         }
 
         // set over current protection limit (accepted range is 45 - 240 mA)
         // NOTE: set value to 0 to disable overcurrent protection
         if (radio.setCurrentLimit(CURRENT_LIMIT) == RADIOLIB_ERR_INVALID_CURRENT_LIMIT) {
-            Serial.println(F("Selected current limit is invalid for this module!"));
+            mcSerial.println(F("Selected current limit is invalid for this module!"));
             while (true);
         }
 
         // set LoRa preamble length to 15 symbols (accepted range is 6 - 65535)
         if (radio.setPreambleLength(LORA_PREAMBLE_LENGTH) == RADIOLIB_ERR_INVALID_PREAMBLE_LENGTH) {
-            Serial.println(F("Selected preamble length is invalid for this module!"));
+            mcSerial.println(F("Selected preamble length is invalid for this module!"));
             while (true);
         }
 
@@ -666,7 +677,7 @@ void esp32setup()
         //       leave at 0 unless you know what you're doing
         if (radio.setGain(0) == RADIOLIB_ERR_INVALID_GAIN)
         {
-            Serial.println(F("Selected gain is invalid for this module!"));
+            mcSerial.println(F("Selected gain is invalid for this module!"));
             while (true);
         }
 
@@ -685,22 +696,22 @@ void esp32setup()
         // radio.setDio1Action(setFlagDetected, RISING);
 
         // start scanning the channel
-        Serial.print(F("[SX127x] Starting to listen ... "));
+        mcSerial.print(F("[SX127x] Starting to listen ... "));
         state = radio.startReceive();
         if (state == RADIOLIB_ERR_NONE)
         {
-            Serial.println(F("success!"));
+            mcSerial.println(F("success!"));
         }
         else
         {
-                Serial.print(F("failed, code "));
-                Serial.println(state);
+                mcSerial.print(F("failed, code "));
+                mcSerial.println(state);
         }        
 
         // enable CRC
         if (radio.setCRC(true) == RADIOLIB_ERR_INVALID_CRC_CONFIGURATION)
         {
-            Serial.println(F("Selected CRC is invalid for this module!"));
+            mcSerial.println(F("Selected CRC is invalid for this module!"));
             while (true);
         }
 
@@ -721,22 +732,22 @@ void esp32setup()
         // radio.setDio1Action(setFlagDetected, RISING);
 
         // start scanning the channel
-        Serial.print(F("[SX126x] Starting to listen ... "));
+        mcSerial.print(F("[SX126x] Starting to listen ... "));
         state = radio.startReceive();
         if (state == RADIOLIB_ERR_NONE)
         {
-            Serial.println(F("success!"));
+            mcSerial.println(F("success!"));
         }
         else
         {
-                Serial.print(F("failed, code "));
-                Serial.println(state);
+                mcSerial.print(F("failed, code "));
+                mcSerial.println(state);
         }        
 
         // enable CRC
         if (radio.setCRC(2) == RADIOLIB_ERR_INVALID_CRC_CONFIGURATION)
         {
-            Serial.println(F("Selected CRC is invalid for this module!"));
+            mcSerial.println(F("Selected CRC is invalid for this module!"));
             while (true);
         }
         #endif
@@ -749,21 +760,21 @@ void esp32setup()
             radio.setDio1Action(setFlagSent);
 
             // start scanning the channel
-            Serial.print(F("[SX126x] Starting to listen ... "));
+            mcSerial.print(F("[SX126x] Starting to listen ... "));
             state = radio.startReceive();
             if (state == RADIOLIB_ERR_NONE)
             {
-                Serial.println(F("success!"));
+                mcSerial.println(F("success!"));
             }
             else
             {
-                    Serial.print(F("failed, code "));
-                    Serial.println(state);
+                    mcSerial.print(F("failed, code "));
+                    mcSerial.println(state);
             }        
     
             // enablee CRC
             if (radio.setCRC(2) == RADIOLIB_ERR_INVALID_CRC_CONFIGURATION) {
-                Serial.println(F("Selected CRC is invalid for this module!"));
+                mcSerial.println(F("Selected CRC is invalid for this module!"));
                 while (true);
             }
         #endif
@@ -775,28 +786,28 @@ void esp32setup()
             radio.setDio1Action(setFlag);
 
             // start scanning the channel
-            Serial.print(F("[SX126x] Starting to listen ... "));
+            mcSerial.print(F("[SX126x] Starting to listen ... "));
             state = radio.startReceive();
             if (state == RADIOLIB_ERR_NONE)
             {
-                Serial.println(F("success!"));
+                mcSerial.println(F("success!"));
             }
             else
             {
-                    Serial.print(F("failed, code "));
-                    Serial.println(state);
+                    mcSerial.print(F("failed, code "));
+                    mcSerial.println(state);
             }        
 
             // enablee CRC
             if (radio.setCRC(2) == RADIOLIB_ERR_INVALID_CRC_CONFIGURATION) {
-                Serial.println(F("Selected CRC is invalid for this module!"));
+                mcSerial.println(F("Selected CRC is invalid for this module!"));
                 while (true);
             }
         
         #endif
     }
 
-    Serial.println(F("[SX12xx] All settings successfully changed!"));
+    mcSerial.println(F("[SX12xx] All settings successfully changed!"));
 
     // Create the BLE Device & WiFiAP
     sprintf(cBLEName, "M%s-%02x%02x-%s", g_ble_dev_name, dmac[1], dmac[0], meshcom_settings.node_call);
@@ -807,11 +818,11 @@ void esp32setup()
     const std::__cxx11::string strBLEName = cBLEName;
     const std::__cxx11::string strBLEManufData = cManufData;
 
-    Serial.printf("[INIT]...BLE-Device started with BLE-Name <%s>\n", strBLEName.c_str());
+    mcSerial.printf("[INIT]...BLE-Device started with BLE-Name <%s>\n", strBLEName.c_str());
 
     NimBLEDevice::init("NimBLE");
 
-    Serial.printf("[INIT]...NIM<%s>\n", NimBLEDevice::toString().c_str());
+    mcSerial.printf("[INIT]...NIM<%s>\n", NimBLEDevice::toString().c_str());
     
     NimBLEDevice::setDeviceName(strBLEName);
 
@@ -883,7 +894,7 @@ void esp32setup()
 
     pAdvertising->start(0);
    
-    Serial.println("[INIT]...Waiting a client connection to notify...");
+    mcSerial.println("[INIT]...Waiting a client connection to notify...");
     
     // reset GPS-Time parameter
     meshcom_settings.node_date_hour = 0;
@@ -911,21 +922,24 @@ void esp32setup()
 
             if(bEXTUDP)
                 startExternUDP();
+
+            // RemoteDebugger
+            Debug.begin("debug");
         }
     }
     //
     ///////////////////////////////////////////////////////
 
-    Serial.println("==============");
-    Serial.println("CLIENT STARTED");
-    Serial.println("==============");
+    mcSerial.println("==============");
+    mcSerial.println("CLIENT STARTED");
+    mcSerial.println("==============");
 
 }
 
 void esp32_write_ble(uint8_t confBuff[300], uint8_t conf_len)
 {
     if(bBLEDEBUG)
-        Serial.println("[LOOP] WRITE BLE");
+        mcSerial.println("[LOOP] WRITE BLE");
 
     pTxCharacteristic->setValue(confBuff, conf_len);
     pTxCharacteristic->notify();
@@ -936,7 +950,10 @@ void esp32loop()
     bool bLoopActive = false;
 
     if(bLoopActive)
-        Serial.println("loop 00");
+        mcSerial.println("loop 00");
+
+    // RemoteDebugger
+    Debug.handle();
 
     if(iReceiveTimeOutTime > 0)
     {
@@ -948,13 +965,13 @@ void esp32loop()
             // LoRa preamble was detected
             if(bLORADEBUG)
             {
-                Serial.printf("[SX12xx] Receive Timeout, starting sending again ... \n");
+                mcSerial.printf("[SX12xx] Receive Timeout, starting sending again ... \n");
             }
         }
     }
 
     if(bLoopActive)
-        Serial.println("loop 01");
+        mcSerial.println("loop 01");
 
     if(receiveFlag || transmittedFlag)
     {
@@ -987,14 +1004,14 @@ void esp32loop()
             {
                 // packet was successfully sent
                 if(bLORADEBUG)
-                    Serial.println(F("transmission finished!"));
+                    mcSerial.println(F("transmission finished!"));
             }
             else
             {
                 if(bLORADEBUG)
                 {
-                    Serial.print(F("failed, code <3> "));
-                    Serial.println(transmissionState);
+                    mcSerial.print(F("failed, code <3> "));
+                    mcSerial.println(transmissionState);
                 }
             }
 
@@ -1016,20 +1033,20 @@ void esp32loop()
             OnTxDone();
 
             if(bLORADEBUG)
-                Serial.print(F("[SX12xx] Starting to listen again... "));
+                mcSerial.print(F("[SX12xx] Starting to listen again... "));
 
             int state = radio.startReceive();
             if (state == RADIOLIB_ERR_NONE)
             {
                 if(bLORADEBUG)
-                    Serial.println(F("success!"));
+                    mcSerial.println(F("success!"));
             }
             else
             {
                 if(bLORADEBUG)
                 {
-                    Serial.print(F("failed, code "));
-                    Serial.println(state);
+                    mcSerial.print(F("failed, code "));
+                    mcSerial.println(state);
                 }
             }        
 
@@ -1060,20 +1077,20 @@ void esp32loop()
             else
             {
                 if(bLORADEBUG)
-                    Serial.print(F("[SX12xx] Starting to listen again... "));
+                    mcSerial.print(F("[SX12xx] Starting to listen again... "));
 
                 int state = radio.startReceive();
                 if (state == RADIOLIB_ERR_NONE)
                 {
                     if(bLORADEBUG)
-                        Serial.println(F("success!"));
+                        mcSerial.println(F("success!"));
                 }
                 else
                 {
                     if(bLORADEBUG)
                     {
-                        Serial.print(F("failed, code "));
-                        Serial.println(state);
+                        mcSerial.print(F("failed, code "));
+                        mcSerial.println(state);
                     }
                 }        
             }
@@ -1081,7 +1098,7 @@ void esp32loop()
     }
     
     if(bLoopActive)
-        Serial.println("loop 02");
+        mcSerial.println("loop 02");
 
     // get RTC Now
     // RTC hat Vorrang zu Zeit via MeshCom-Server
@@ -1138,7 +1155,7 @@ void esp32loop()
     #endif
 
     if(bLoopActive)
-        Serial.printf("[LOOP] 1\n");
+        mcSerial.printf("[LOOP] 1\n");
 
     checkButtonState();
 
@@ -1160,7 +1177,7 @@ void esp32loop()
     }
 
     if(bLoopActive)
-        Serial.printf("[LOOP] 1-1\n");
+        mcSerial.printf("[LOOP] 1-1\n");
 
     // connecting
     if (deviceConnected && !oldDeviceConnected) {
@@ -1169,20 +1186,20 @@ void esp32loop()
     }
 
     if(bLoopActive)
-        Serial.printf("[LOOP] 1-2\n");
+        mcSerial.printf("[LOOP] 1-2\n");
 
     // check if message from phone to send
     if(hasMsgFromPhone)
     {
         if(bBLEDEBUG)
-            Serial.printf("[LOOP] hasMsgFromPhone\n");
+            mcSerial.printf("[LOOP] hasMsgFromPhone\n");
         sendMessage(textbuff_phone, txt_msg_len_phone);
 
         hasMsgFromPhone = false;
     }
 
     if(bLoopActive)
-        Serial.printf("[LOOP] 1-3\n");
+        mcSerial.printf("[LOOP] 1-3\n");
 
     checkButtonState();
 
@@ -1232,7 +1249,7 @@ void esp32loop()
     }
 
     if(bLoopActive)
-        Serial.printf("[LOOP] 2\n");
+        mcSerial.printf("[LOOP] 2\n");
 
     // gps refresh every 10 sec
     if ((gps_refresh_timer + (GPS_REFRESH_INTERVAL * 1000)) < millis())
@@ -1261,7 +1278,7 @@ void esp32loop()
     }
 
     if(bLoopActive)
-        Serial.printf("[LOOP] 3\n");
+        mcSerial.printf("[LOOP] 3\n");
 
     checkButtonState();
 
@@ -1305,7 +1322,7 @@ void esp32loop()
     }
 
     if(bLoopActive)
-        Serial.printf("[LOOP] 4\n");
+        mcSerial.printf("[LOOP] 4\n");
 
     // rebootAuto
     if(rebootAuto > 0)
@@ -1323,18 +1340,18 @@ void esp32loop()
     checkButtonState();
 
     if(bLoopActive)
-        Serial.printf("[LOOP] 5\n");
+        mcSerial.printf("[LOOP] 5\n");
 
     checkSerialCommand();
 
     if(bLoopActive)
-        Serial.printf("[LOOP] 6\n");
+        mcSerial.printf("[LOOP] 6\n");
 
     if(BattTimeWait == 0)
         BattTimeWait = millis() - 10000;
 
 
-    //Serial.printf("BattTimeWait:%i millis():%i tx:%i rx:%i\n", BattTimeWait, millis(), tx_is_active, is_receiving);
+    //mcSerial.printf("BattTimeWait:%i millis():%i tx:%i rx:%i\n", BattTimeWait, millis(), tx_is_active, is_receiving);
 
     if ((BattTimeWait + 10000) < millis())  // 10 sec
     {
@@ -1360,12 +1377,12 @@ void esp32loop()
                 }
 
                 if(bDEBUG)
-                    Serial.printf("PMU.volt %.1f PMU.proz %i\n", global_batt, global_proz);
+                    mcSerial.printf("PMU.volt %.1f PMU.proz %i\n", global_batt, global_proz);
             #else
                 global_batt = read_batt();
                 global_proz = mv_to_percent(global_batt);
                 if(bDEBUG)
-                    Serial.printf("volt %.1f proz %i\n", global_batt, global_proz);
+                    mcSerial.printf("volt %.1f proz %i\n", global_batt, global_proz);
             #endif
 
             BattTimeWait = millis();
@@ -1400,7 +1417,7 @@ void esp32loop()
 //#endif
 
     if(bLoopActive)
-        Serial.printf("[LOOP] 7\n");
+        mcSerial.printf("[LOOP] 7\n");
 
     // read BMP Sensor
     #if defined(ENABLE_BMX280)
@@ -1432,7 +1449,7 @@ void esp32loop()
     #endif
 
     if(bLoopActive)
-        Serial.printf("[LOOP] 8\n");
+        mcSerial.printf("[LOOP] 8\n");
 
     checkButtonState();
 
@@ -1482,7 +1499,7 @@ void esp32loop()
     #endif
 
     if(bLoopActive)
-        Serial.printf("[LOOP] 9\n");
+        mcSerial.printf("[LOOP] 9\n");
 
     // read every n seconds the bme680 sensor calculated from millis()
     #if defined(ENABLE_BMX680)
@@ -1514,7 +1531,7 @@ void esp32loop()
     #endif
     
     if(bLoopActive)
-        Serial.printf("[LOOP] A\n");
+        mcSerial.printf("[LOOP] A\n");
 
     checkButtonState();
 
@@ -1567,7 +1584,7 @@ void esp32loop()
     ////////////////////////////////////////////////
 
     if(bLoopActive)
-            Serial.printf("[LOOP] B\n");
+            mcSerial.printf("[LOOP] B\n");
 
     delay(100);
 
@@ -1601,22 +1618,22 @@ int checkRX(void)
         if(bLORADEBUG)
         {
             // packet was successfully received
-            Serial.print(F("[SX12xx] Received packet: "));
+            mcSerial.print(F("[SX12xx] Received packet: "));
 
             // print RSSI (Received Signal Strength Indicator)
-            Serial.print(F("RSSI:\t\t"));
-            Serial.print(radio.getRSSI());
-            Serial.print(F(" dBm / "));
+            mcSerial.print(F("RSSI:\t\t"));
+            mcSerial.print(radio.getRSSI());
+            mcSerial.print(F(" dBm / "));
 
             // print SNR (Signal-to-Noise Ratio)
-            Serial.print(F("SNR:\t\t"));
-            Serial.print(radio.getSNR());
-            Serial.print(F(" dB / "));
+            mcSerial.print(F("SNR:\t\t"));
+            mcSerial.print(radio.getSNR());
+            mcSerial.print(F(" dB / "));
 
             // print frequency error
-            Serial.print(F("Frequency error:\t"));
-            Serial.print(radio.getFrequencyError());
-            Serial.println(F(" Hz"));
+            mcSerial.print(F("Frequency error:\t"));
+            mcSerial.print(radio.getFrequencyError());
+            mcSerial.println(F(" Hz"));
         }
 
         OnRxDone(payload, (uint16_t)ibytes, (int16_t)radio.getRSSI(), (int8_t)radio.getSNR());
@@ -1626,13 +1643,13 @@ int checkRX(void)
     {
         // packet was received, but is malformed
         if(bLORADEBUG)
-            Serial.println(F("[SX12xx] CRC error!"));
+            mcSerial.println(F("[SX12xx] CRC error!"));
     }
     else
     {
         // some other error occurred
-        Serial.print(F("[SX12xx] Failed, code <2>"));
-        Serial.println(state);
+        mcSerial.print(F("[SX12xx] Failed, code <2>"));
+        mcSerial.println(state);
     }
 
     is_receiving=false;
@@ -1654,7 +1671,7 @@ void checkSerialCommand(void)
     {
         char rd = Serial.read();
 
-        Serial.print(rd);
+        mcSerial.print(rd);
 
         strText += rd;
 

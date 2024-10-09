@@ -4,6 +4,8 @@
 
 #include <Preferences.h>
 
+#include "mc_serial.h"
+
 Preferences preferences;
 
 s_meshcom_settings meshcom_settings;
@@ -11,7 +13,7 @@ s_meshcom_settings meshcom_settings;
 // Get LoRa parameter
 void init_flash(void)
 {
-    Serial.println("[INIT]...init_flash");
+    mcSerial.println("[INIT]...init_flash");
     
     preferences.begin("Credentials", false);
 
@@ -263,5 +265,5 @@ void save_settings(void)
 
     preferences.end();
 
-    Serial.println("flash save...");
+    mcSerial.println("flash save...");
 }

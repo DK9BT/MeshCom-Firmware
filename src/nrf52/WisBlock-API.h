@@ -37,9 +37,9 @@
 	do                                   \
 	{                                    \
 		if (tag)                         \
-			Serial.printf("[%s] ", tag); \
-		Serial.printf(__VA_ARGS__);      \
-		Serial.printf("\n");             \
+			mcSerial.printf("[%s] ", tag); \
+		mcSerial.printf(__VA_ARGS__);      \
+		mcSerial.printf("\n");             \
 	} while (0)
 #endif
 #else

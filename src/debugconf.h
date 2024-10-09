@@ -13,32 +13,32 @@
 	do                                   \
 	{                                    \
 		if (tag)                         \
-        Serial.print("");\
-		Serial.printf("  <%s> ", tag); \
-		Serial.printf(__VA_ARGS__);      \
-		Serial.printf("\n");             \
+        mcSerial.print("");\
+		mcSerial.printf("  <%s> ", tag); \
+		mcSerial.printf(__VA_ARGS__);      \
+		mcSerial.printf("\n");             \
 	} while (0)
 
 #define DEBUG_MSG_VAL(tag, val, ...)                \
 	do                                   \
 	{                                    \
 		if (tag)                         \
-        Serial.print("");\
-		Serial.printf("  <%s> ", tag); \
-		Serial.printf(__VA_ARGS__);      \
-		Serial.printf("  <%d> ", val); \
-		Serial.printf("\n");             \
+        mcSerial.print("");\
+		mcSerial.printf("  <%s> ", tag); \
+		mcSerial.printf(__VA_ARGS__);      \
+		mcSerial.printf("  <%d> ", val); \
+		mcSerial.printf("\n");             \
 	} while (0)
 
 #define DEBUG_MSG_TXT(tag, txt, ...)                \
 	do                                   \
 	{                                    \
 		if (tag)                         \
-        Serial.print("");\
-		Serial.printf("  <%s> ", tag); \
-		Serial.printf(__VA_ARGS__);      \
-		Serial.printf("  %s ", txt); \
-		Serial.printf("\n");             \
+        mcSerial.print("");\
+		mcSerial.printf("  <%s> ", tag); \
+		mcSerial.printf(__VA_ARGS__);      \
+		mcSerial.printf("  %s ", txt); \
+		mcSerial.printf("\n");             \
 	} while (0)
 
 #else

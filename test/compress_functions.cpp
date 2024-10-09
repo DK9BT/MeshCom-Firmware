@@ -3,16 +3,16 @@
 
 void text_compress(String text)
 {
-    Serial.println("");
-    Serial.println("Start:");
+    mcSerial.println("");
+    mcSerial.println("Start:");
 
-    Serial.println(text);
-    Serial.printf("Länge unkomprimierter String:%i\n", text.length());
+    mcSerial.println(text);
+    mcSerial.printf("Länge unkomprimierter String:%i\n", text.length());
 
     String compressedText = compress_encode(text, "#");
-    Serial.println(compressedText);
+    mcSerial.println(compressedText);
     
-    Serial.println(compress_decode(compressedText, "#"));
+    mcSerial.println(compress_decode(compressedText, "#"));
 }
 
 /**
@@ -24,7 +24,7 @@ void text_compress(String text)
  */
 String compress_encode(String text, String compressChar)
 {
-    Serial.printf( "Länge Originalstring:%i\n", text.length());
+    mcSerial.printf( "Länge Originalstring:%i\n", text.length());
     //Maximale Ersparnis wird gesucht
     int maxSavings = 0;
     String bestPattern = "";
@@ -40,7 +40,7 @@ String compress_encode(String text, String compressChar)
             int found = getOccurences(text, pattern);
             //Ersparnis: Anzahl Funde * Länge Pattern - Länge des Patterns (weil der ja am Anfang wieder hin kommt)+ 1 wegen dem Doppelpunkt + Anzahl Funde wegen dem Char
             int savings = (found * pattern.length()) - (pattern.length()+1+found);
-            //Serial.printf( "Pattern:%s  found:%i Ersparnis:%i Zeichen", pattern, found, savings);
+            //mcSerial.printf( "Pattern:%s  found:%i Ersparnis:%i Zeichen", pattern, found, savings);
             //Die Ersparnis ist größer / gleich gut als das bisher gefundene
             if ( savings > maxSavings )
             {
@@ -52,13 +52,13 @@ String compress_encode(String text, String compressChar)
         }
     }
     
-    //Serial.println( "BestPattern: "+bestPattern );
+    //mcSerial.println( "BestPattern: "+bestPattern );
     String resultString = bestPattern;
     resultString.concat(":");
     text.replace(bestPattern, compressChar);
     resultString.concat(text);
 
-    Serial.printf("Länge komprimierter String:%i\n", resultString.length());
+    mcSerial.printf("Länge komprimierter String:%i\n", resultString.length());
     return resultString;
 }
 

@@ -63,7 +63,7 @@ void setup ()
 {
 
   Serial.begin (115200);
-  Serial.println ();
+  mcSerial.println ();
 
   MatchState ms;
   char buf [100];  // large enough to hold expected string, or malloc it
@@ -80,33 +80,33 @@ void setup ()
   {
     case REGEXP_MATCHED:
 
-      Serial.println ("-----");
+      mcSerial.println ("-----");
       Serial.print ("Matched on: ");
-      Serial.println (ms.GetMatch (buf));
+      mcSerial.println (ms.GetMatch (buf));
 
       // matching offsets in ms.capture
 
       Serial.print ("Captures: ");
-      Serial.println (ms.level);
+      mcSerial.println (ms.level);
 
       for (int j = 0; j < ms.level; j++)
       {
         Serial.print ("Capture number: ");
-        Serial.println (j + 1, DEC);
+        mcSerial.println (j + 1, DEC);
         Serial.print ("Text: '");
         Serial.print (ms.GetCapture (buf, j));
-        Serial.println ("'");
+        mcSerial.println ("'");
 
       }
       break;
 
     case REGEXP_NOMATCH:
-      Serial.println ("No match.");
+      mcSerial.println ("No match.");
       break;
 
     default:
       Serial.print ("Regexp error: ");
-      Serial.println (result, DEC);
+      mcSerial.println (result, DEC);
       break;
 
   }  // end of switch

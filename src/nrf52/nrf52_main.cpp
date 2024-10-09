@@ -322,8 +322,8 @@ void nrf52setup()
         }
     }
 
-    Serial.println("=====================================");
-    Serial.println("[INIT] START CLIENT");
+    mcSerial.println("=====================================");
+    mcSerial.println("[INIT] START CLIENT");
 
     // init nach Reboot
     init_loop_function();
@@ -465,7 +465,7 @@ void nrf52setup()
 	
 	// initialize clock
 	boResult = MyClock.Init();
-	Serial.printf("Initialize clock: %s\n", (boResult) ? "ok" : "FAILED");
+	mcSerial.printf("Initialize clock: %s\n", (boResult) ? "ok" : "FAILED");
 
     DisplayTimeWait=0;
     //
@@ -480,9 +480,9 @@ void nrf52setup()
         digitalWrite(WB_IO2, 1);
         delay(1000);
         
-        Serial.println("=====================================");
+        mcSerial.println("=====================================");
 
-        Serial.println("GPS: trying 38400 baud");
+        mcSerial.println("GPS: trying 38400 baud");
         
         Serial1.begin(38400);
         Serial1.setTimeout(500);
@@ -492,14 +492,14 @@ void nrf52setup()
         {
             if (myGPS.begin(Serial1))
             {
-                Serial.println("GPS: connected at 38400 baud");
+                mcSerial.println("GPS: connected at 38400 baud");
             }
             else
             {
                 Serial1.end();
 
                 delay(100);
-                Serial.println("GPS: trying 9600 baud");
+                mcSerial.println("GPS: trying 9600 baud");
 
                 Serial1.begin(9600);
                 Serial1.setTimeout(500);
@@ -509,19 +509,19 @@ void nrf52setup()
                 {
                     if (myGPS.begin(Serial1))
                     {
-                        Serial.println("GPS: connected at 9600 baud");
+                        mcSerial.println("GPS: connected at 9600 baud");
                     }
                     else
                     {
-                        Serial.println("GPS: speed not found");
+                        mcSerial.println("GPS: speed not found");
                     }
                 }
                 else
-                    Serial.println("GPS: not connected");
+                    mcSerial.println("GPS: not connected");
             }
         }
         else
-            Serial.println("GPS: not connected");
+            mcSerial.println("GPS: not connected");
 
         delay(100);
     }
@@ -531,11 +531,11 @@ void nrf52setup()
 
     if(bLPS33)
     {
-        Serial.println("Adafruit LPS33 check");
+        mcSerial.println("Adafruit LPS33 check");
 
         if (!g_lps22hb.begin_I2C(0x5d)) 
         {
-            Serial.println("Failed to find LPS33 chip");
+            mcSerial.println("Failed to find LPS33 chip");
             //while (1) 
             { 
             //  delay(10); 
@@ -543,24 +543,24 @@ void nrf52setup()
         }
         else
         {
-            Serial.println("LPS33 sensor found");
+            mcSerial.println("LPS33 sensor found");
 
             g_lps22hb.setDataRate(LPS22_RATE_10_HZ);
 
             /*
-            Serial.print("Data rate set to: ");
+            mcSerial.print("Data rate set to: ");
 
             switch (g_lps22hb.getDataRate()) 
             {
-                case LPS22_RATE_ONE_SHOT: Serial.println("One Shot / Power Down"); 
+                case LPS22_RATE_ONE_SHOT: mcSerial.println("One Shot / Power Down"); 
                     break;
-                case LPS22_RATE_1_HZ: Serial.println("1 Hz"); 
+                case LPS22_RATE_1_HZ: mcSerial.println("1 Hz"); 
                     break;
-                case LPS22_RATE_10_HZ: Serial.println("10 Hz"); 
+                case LPS22_RATE_10_HZ: mcSerial.println("10 Hz"); 
                     break;
-                case LPS22_RATE_25_HZ: Serial.println("25 Hz"); 
+                case LPS22_RATE_25_HZ: mcSerial.println("25 Hz"); 
                     break;
-                case LPS22_RATE_50_HZ: Serial.println("50 Hz"); 
+                case LPS22_RATE_50_HZ: mcSerial.println("50 Hz"); 
                     break;
             }
             */
@@ -570,12 +570,12 @@ void nrf52setup()
 
     #if defined(SHTC3)
 
-    Serial.println("Adafruit SHTC3 check");
+    mcSerial.println("Adafruit SHTC3 check");
     if (!shtc3.begin()) {
-        Serial.println("Couldn't find SHTC3");
+        mcSerial.println("Couldn't find SHTC3");
         while (1) delay(1);
     }
-    Serial.println("SHTC3 sensor found");
+    mcSerial.println("SHTC3 sensor found");
 
     #endif // SHTC3
 
@@ -590,7 +590,7 @@ void nrf52setup()
 		// Init BLE
 		init_ble();
 
-        Serial.println("[init] BLE init");
+        mcSerial.println("[init] BLE init");
 	}
 	else
 	{
@@ -664,7 +664,7 @@ void nrf52setup()
     meshcom_settings.node_date_second = 0;
     meshcom_settings.node_date_hundredths = 0;
 
-    Serial.println("CLIENT STARTED");
+    mcSerial.println("CLIENT STARTED");
 
     //  Set the LoRa Callback Functions
     RadioEvents.TxDone = OnTxDone;
@@ -685,20 +685,20 @@ void nrf52setup()
     Radio.SetPublicNetwork(true);
 
     // set bandwidth 
-    Serial.printf("[LoRa]...RF_BANDWIDTH: %.0f kHz\n", getBW());
+    mcSerial.printf("[LoRa]...RF_BANDWIDTH: %.0f kHz\n", getBW());
 
     // set spreading factor 
-    Serial.printf("[LoRa]...RF_SF: %i\n",  getSF());
+    mcSerial.printf("[LoRa]...RF_SF: %i\n",  getSF());
 
     // coding rate
-    Serial.printf("[LoRa]...RF_CR: 4/%i\n", getCR());
+    mcSerial.printf("[LoRa]...RF_CR: 4/%i\n", getCR());
 
 
     // set carrier frequency
     uint32_t ifreq=(getFreq()*1000.)+0.5;
     ifreq = ifreq * 1000;
 
-    Serial.printf("[LoRa]...RF_FREQUENCY: %.4f %ld MHz\n", getFreq(), ifreq);
+    mcSerial.printf("[LoRa]...RF_FREQUENCY: %.4f %ld MHz\n", getFreq(), ifreq);
 
     //  Set the LoRa Frequency
     Radio.SetChannel(ifreq);
@@ -722,7 +722,7 @@ void nrf52setup()
     );
 
     // Set Radio TX configuration
-    Serial.printf("[LoRa]...RF_POWER: %i dBm\n", getPower());
+    mcSerial.printf("[LoRa]...RF_POWER: %i dBm\n", getPower());
 
     Radio.SetTxConfig(
         MODEM_LORA,
@@ -757,7 +757,7 @@ void nrf52setup()
 
     sd_power_mode_set(NRF_POWER_MODE_CONSTLAT);
 
-    Serial.println("=====================================");
+    mcSerial.println("=====================================");
 
     delay(100);
 
@@ -765,7 +765,7 @@ void nrf52setup()
     {
         //////////////////////////////////////////////////////
         // ETHERNET INIT
-        Serial.println("[init] ETH DHCP init");
+        mcSerial.println("[init] ETH DHCP init");
     
         neth.initethDHCP();
 
@@ -773,9 +773,9 @@ void nrf52setup()
         {
             sendHeartbeat();
 
-            Serial.println("=====================================");
-            Serial.printf("GATEWAY 4.0 RUNNING %s\n", neth.hasIPaddress?"ETH connect":"ETH no connect");
-            Serial.println("=====================================");
+            mcSerial.println("=====================================");
+            mcSerial.printf("GATEWAY 4.0 RUNNING %s\n", neth.hasIPaddress?"ETH connect":"ETH no connect");
+            mcSerial.println("=====================================");
 
             if(bWEBSERVER)
             {
@@ -799,7 +799,7 @@ void nrf52setup()
 void nrf52loop()
 {
     // check if we have messages in ringbuffer to send
-    //Serial.printf("is_receiving:%i tx_is_active:%i iWrite:%i iRead:%i \n", is_receiving, tx_is_active, iWrite, iRead);
+    //mcSerial.printf("is_receiving:%i tx_is_active:%i iWrite:%i iRead:%i \n", is_receiving, tx_is_active, iWrite, iRead);
 
 
     if(iReceiveTimeOutTime > 0)
@@ -812,7 +812,7 @@ void nrf52loop()
             // LoRa preamble was detected
             if(bLORADEBUG)
             {
-                Serial.printf("[SX12xx] Receive Timeout, starting sending again ... \n");
+                mcSerial.printf("[SX12xx] Receive Timeout, starting sending again ... \n");
             }
         }
     }
@@ -895,9 +895,9 @@ void nrf52loop()
 
     if(gKeyNum == 1)
     {
-        Serial.println("Left button pressed");
+        mcSerial.println("Left button pressed");
 
-        //Serial.println("gKeyNum == 1");
+        //mcSerial.println("gKeyNum == 1");
 
         //getTEMP();
 
@@ -908,7 +908,7 @@ void nrf52loop()
 
     if(gKeyNum == 2)
     {
-        //Serial.println("gKeyNum == 2");
+        //mcSerial.println("gKeyNum == 2");
 
         #ifdef ENABLE_GPS
 
@@ -941,7 +941,7 @@ void nrf52loop()
 
     if(gKeyNum == 3)
     {
-        Serial.println("Right button pressed");
+        mcSerial.println("Right button pressed");
 
         gKeyNum = 0;
     }
@@ -992,8 +992,8 @@ void nrf52loop()
     }
 
     // posinfo
-    //Serial.print(getTimeString());
-    //Serial.printf(" posinfo_timer:%ld posinfo_interval:%ld timer:%ld millis:%ld\n", posinfo_timer, posinfo_interval, (posinfo_timer + (posinfo_interval * 1000)), millis());
+    //mcSerial.print(getTimeString());
+    //mcSerial.printf(" posinfo_timer:%ld posinfo_interval:%ld timer:%ld millis:%ld\n", posinfo_timer, posinfo_interval, (posinfo_timer + (posinfo_interval * 1000)), millis());
 
     // posinfo_interval in Seconds
     if (((posinfo_timer + (posinfo_interval * 1000)) < millis()) || (millis() > 100000 && millis() < 130000 && bPosFirst) || posinfo_shot)
@@ -1042,8 +1042,8 @@ void nrf52loop()
             neth.hasIPaddress = false;
             cmd_counter = 50;
 
-            Serial.print(getTimeString());
-            Serial.println(" [MAIN] initethDHCP");
+            mcSerial.print(getTimeString());
+            mcSerial.println(" [MAIN] initethDHCP");
 
             neth.initethDHCP();
 
@@ -1054,8 +1054,8 @@ void nrf52loop()
         {
             if(bDEBUG)
             {
-                Serial.print(getTimeString());
-                Serial.println(" [MAIN] checkDHCP");
+                mcSerial.print(getTimeString());
+                mcSerial.println(" [MAIN] checkDHCP");
             }
 
             dhcp_timer = millis();
@@ -1341,8 +1341,8 @@ void nrf52loop()
         {
             if(bDEBUG)
             {
-                Serial.print(getTimeString());
-                Serial.printf(" [UDP] sending Heartbeat\n");
+                mcSerial.print(getTimeString());
+                mcSerial.printf(" [UDP] sending Heartbeat\n");
             }
 
             sendHeartbeat();
@@ -1391,8 +1391,8 @@ void getTEMP(void)
 
     if(bWXDEBUG)
     {
-        Serial.print("Temperature: "); Serial.print(temp.temperature); Serial.println(" degrees C");
-        Serial.print("Humidity: "); Serial.print(humidity.relative_humidity); Serial.println("% rH");
+        mcSerial.print("Temperature: "); mcSerial.print(temp.temperature); mcSerial.println(" degrees C");
+        mcSerial.print("Humidity: "); mcSerial.print(humidity.relative_humidity); mcSerial.println("% rH");
     }
 
     meshcom_settings.node_temp = temp.temperature;
@@ -1410,9 +1410,9 @@ void getPRESSURE(void)
 
     if(bWXDEBUG)
     {
-        Serial.print("Temperature: ");Serial.print(temp.temperature);Serial.println(" degrees C");
-        Serial.print("Pressure: ");Serial.print(pressure.pressure);Serial.println(" hPa");
-        Serial.println("");
+        mcSerial.print("Temperature: ");mcSerial.print(temp.temperature);mcSerial.println(" degrees C");
+        mcSerial.print("Pressure: ");mcSerial.print(pressure.pressure);mcSerial.println(" hPa");
+        mcSerial.println("");
     }
     
     //double home_alt=meshcom_settings.node_alt;    // Höhe des Standorts
@@ -1461,7 +1461,7 @@ void direction_parse(String tmp)
 unsigned int getGPS(void)
 {
     if(bGPSDEBUG)
-        Serial.println("-----------check GPS-----------");
+        mcSerial.println("-----------check GPS-----------");
 
     String tmp_data = "";
 
@@ -1523,7 +1523,7 @@ unsigned int getGPS(void)
 
         if(bGPSDEBUG)
         {
-            Serial.printf("INT: LAT:%lf%c LON:%lf%c ALT:%i (%i-%02i-%02i %02i:%02i:%02i)\n", meshcom_settings.node_lat, meshcom_settings.node_lat_c, meshcom_settings.node_lon, meshcom_settings.node_lon_c, meshcom_settings.node_alt,
+            mcSerial.printf("INT: LAT:%lf%c LON:%lf%c ALT:%i (%i-%02i-%02i %02i:%02i:%02i)\n", meshcom_settings.node_lat, meshcom_settings.node_lat_c, meshcom_settings.node_lon, meshcom_settings.node_lon_c, meshcom_settings.node_alt,
             meshcom_settings.node_date_year, meshcom_settings.node_date_month,  meshcom_settings.node_date_day,
             meshcom_settings.node_date_hour, meshcom_settings.node_date_minute, meshcom_settings.node_date_second );
         }
@@ -1559,7 +1559,7 @@ void checkSerialCommand(void)
     {
         char rd = Serial.read();
 
-        Serial.print(rd);
+        mcSerial.print(rd);
 
         strText += rd;
 
@@ -1624,7 +1624,7 @@ void sendUDP()
             
             if(msg_len != 23)
             {
-                //Serial.printf("UDP TX out:%i len:%i\n", udpRead, msg_len);
+                //mcSerial.printf("UDP TX out:%i len:%i\n", udpRead, msg_len);
                 //DEBUG_MSG_VAL("UDP", udpRead, "UDP TX out:");
                 //printBuffer(ringBufferUDPout[udpRead] + 1, msg_len);
             }
@@ -1633,7 +1633,7 @@ void sendUDP()
             // send it over UDP
             if (!neth.sendUDP(ringBufferUDPout[udpRead] + 1, msg_len))
             {
-                Serial.printf("Sending UDP Packet failed <%i>!\n", msg_len);
+                mcSerial.printf("Sending UDP Packet failed <%i>!\n", msg_len);
 
                 DEBUG_MSG("ERROR", "Sending UDP Packet failed!");
 
@@ -1644,8 +1644,8 @@ void sendUDP()
                     // avoid TX and UDP
                     neth.hasIPaddress = false;
 
-                    Serial.print(getTimeString());
-                    Serial.printf(" [MAIN] resetDHCP\n");
+                    mcSerial.print(getTimeString());
+                    mcSerial.printf(" [MAIN] resetDHCP\n");
 
                     err_cnt_udp_tx = 0;
                     neth.resetDHCP();
@@ -1655,7 +1655,7 @@ void sendUDP()
             {
                 memcpy(convBuffer, ringBufferUDPout[udpRead] + 1 + 18, msg_len);
 
-                //Serial.printf("convBuffer[0] %02X\n", convBuffer[0]);
+                //mcSerial.printf("convBuffer[0] %02X\n", convBuffer[0]);
 
                 if(convBuffer[0] == 0x3A || convBuffer[0] == 0x21 || convBuffer[0] == 0x40)
                 {
@@ -1668,7 +1668,7 @@ void sendUDP()
                     if(bDisplayInfo)
                     {
                         printBuffer_aprs((char*)"TX-UDP ", aprsmsg);
-                        Serial.println("");
+                        mcSerial.println("");
                     }
                 }
             }

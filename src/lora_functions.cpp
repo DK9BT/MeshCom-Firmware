@@ -67,17 +67,17 @@ void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr)
 {
     uint8_t print_buff[30];
 
-    //Serial.printf("Start OnRxDone:<%-20.20s> %i\n", payload, size);
+    //mcSerial.printf("Start OnRxDone:<%-20.20s> %i\n", payload, size);
 
     if(payload[0] == 0x41)
     {
         if(bLORADEBUG)
         {
-            Serial.print(getTimeString());
+            mcSerial.print(getTimeString());
             if(size == 7)
-                Serial.printf(" %s: %02X %02X%02X%02X%02X %02X %02X\n", (char*)"RX-LoRa", payload[0], payload[1], payload[2], payload[3], payload[4], payload[5], payload[6]);
+                mcSerial.printf(" %s: %02X %02X%02X%02X%02X %02X %02X\n", (char*)"RX-LoRa", payload[0], payload[1], payload[2], payload[3], payload[4], payload[5], payload[6]);
             else
-                Serial.printf(" %s: %02X %02X%02X%02X%02X %02X %02X%02X%02X%02X %02X %02X\n", (char*)"RX-LoRa", payload[0], payload[1], payload[2], payload[3], payload[4], payload[5], payload[6], payload[7], payload[8], payload[9], payload[10], payload[11]);
+                mcSerial.printf(" %s: %02X %02X%02X%02X%02X %02X %02X%02X%02X%02X %02X %02X\n", (char*)"RX-LoRa", payload[0], payload[1], payload[2], payload[3], payload[4], payload[5], payload[6], payload[7], payload[8], payload[9], payload[10], payload[11]);
         }
 
         memcpy(print_buff, payload, 12);
@@ -95,7 +95,7 @@ void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr)
 
             // ACK MSG 0x41 | 0x01020111 | max_hop | 0x01020304 | 1/0 ack from GW or Node 0x00 = Node, 0x01 = GW
 
-            //Serial.printf("ACK from LoRa %02X%02X%02X%02X %02X %02X%02X%02X%02X %02X %02X\n", print_buff[4], print_buff[3], print_buff[2], print_buff[1], print_buff[5], print_buff[9], print_buff[8], print_buff[7], print_buff[6], print_buff[10], print_buff[11]);
+            //mcSerial.printf("ACK from LoRa %02X%02X%02X%02X %02X %02X%02X%02X%02X %02X %02X\n", print_buff[4], print_buff[3], print_buff[2], print_buff[1], print_buff[5], print_buff[9], print_buff[8], print_buff[7], print_buff[6], print_buff[10], print_buff[11]);
 
             if(icheck >= 0)
             {
@@ -105,7 +105,7 @@ void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr)
                     addBLEOutBuffer(print_buff+5, 7);
 
                     if(bLORADEBUG)
-                        Serial.printf("ACK   to Phone  %02X %02X%02X%02X%02X %02X %02X\n", print_buff[5], print_buff[6], print_buff[7], print_buff[8], print_buff[9], print_buff[10], print_buff[11]);
+                        mcSerial.printf("ACK   to Phone  %02X %02X%02X%02X%02X %02X %02X\n", print_buff[5], print_buff[6], print_buff[7], print_buff[8], print_buff[9], print_buff[10], print_buff[11]);
                     
                     own_msg_id[icheck][4] = 0x02;   // 02...ACK
                 }
@@ -124,7 +124,7 @@ void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr)
                     iWrite=0;
         
                     if(bLORADEBUG)
-                        Serial.printf("ACK forward  %02X%02X%02X%02X %02X %02X%02X%02X%02X %02X %02X\n", print_buff[4], print_buff[3], print_buff[2], print_buff[1], print_buff[5], print_buff[9], print_buff[8], print_buff[7], print_buff[6], print_buff[10], print_buff[11]);
+                        mcSerial.printf("ACK forward  %02X%02X%02X%02X %02X %02X%02X%02X%02X %02X %02X\n", print_buff[4], print_buff[3], print_buff[2], print_buff[1], print_buff[5], print_buff[9], print_buff[8], print_buff[7], print_buff[6], print_buff[10], print_buff[11]);
                 }
             }
         }
@@ -144,7 +144,7 @@ void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr)
 
         if(msg_type_b_lora == 0x00)
         {
-            //Serial.printf("%03i RCV:%s\n", size, RcvBuffer+6);
+            //mcSerial.printf("%03i RCV:%s\n", size, RcvBuffer+6);
         }
         else
         {
@@ -234,7 +234,7 @@ void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr)
                 if(bLORADEBUG && bDisplayInfo)
                 {
                     printBuffer_aprs((char*)"MH-LoRa", aprsmsg);
-                    Serial.println();
+                    mcSerial.println();
                 }
             }
 
@@ -256,7 +256,7 @@ void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr)
                     addBLEOutBuffer(print_buff, 7);
 
                     if(bDisplayInfo)
-                        Serial.printf("HEARD from <%s> to Phone  %02X %02X%02X%02X%02X %02X %02X\n", aprsmsg.msg_source_path.c_str(), print_buff[0], print_buff[1], print_buff[2], print_buff[3], print_buff[4], print_buff[5], print_buff[6]);
+                        mcSerial.printf("HEARD from <%s> to Phone  %02X %02X%02X%02X%02X %02X %02X\n", aprsmsg.msg_source_path.c_str(), print_buff[0], print_buff[1], print_buff[2], print_buff[3], print_buff[4], print_buff[5], print_buff[6]);
 
                     own_msg_id[icheck][4]=0x01; // 0x01 HEARD
                 }
@@ -369,7 +369,7 @@ void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr)
                                         unsigned int iAckId = (aprsmsg.msg_payload.substring(iEnqPos+1)).toInt();
                                         
                                         if(bDisplayInfo)
-                                            Serial.println("");
+                                            mcSerial.println("");
                                             
                                         SendAckMessage(aprsmsg.msg_source_call, iAckId);
 
@@ -473,7 +473,7 @@ void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr)
                                                 if(iWrite >= MAX_RING)
                                                     iWrite=0;
 
-                                                Serial.printf("ACK from LoRa GW %02X %02X%02X%02X%02X %02X %02X\n", print_buff[5], print_buff[9], print_buff[8], print_buff[7], print_buff[6], print_buff[10], print_buff[11]);
+                                                mcSerial.printf("ACK from LoRa GW %02X %02X%02X%02X%02X %02X %02X\n", print_buff[5], print_buff[9], print_buff[8], print_buff[7], print_buff[6], print_buff[10], print_buff[11]);
                                                 
                                                 unsigned int mid = (print_buff[1]) | (print_buff[2]<<8) | (print_buff[3]<<16) | (print_buff[4]<<24);
                                                 addLoraRxBuffer(mid);
@@ -572,13 +572,13 @@ void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr)
                                         iWrite=0;
                                     
                                     if(bDisplayInfo)
-                                        Serial.println(" This packet to mesh");
+                                        mcSerial.println(" This packet to mesh");
                                 }
                             }
                             else
                             {
                                 if(bDisplayInfo)
-                                    Serial.println("");
+                                    mcSerial.println("");
                             }
                         }
                     }
@@ -604,7 +604,7 @@ void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr)
 
 
     if(bLORADEBUG)
-        Serial.println("OnRxDone");
+        mcSerial.println("OnRxDone");
 
     iReceiveTimeOutTime = millis();
 
@@ -620,7 +620,7 @@ void OnRxTimeout(void)
     #endif
 
     if(bLORADEBUG)
-        Serial.println("OnRxTimeout");
+        mcSerial.println("OnRxTimeout");
 
     is_receiving = false;
 }
@@ -635,7 +635,7 @@ void OnRxError(void)
     #endif
 
     if(bLORADEBUG)
-        Serial.println("OnRxError");
+        mcSerial.println("OnRxError");
 
     is_receiving = false;
 }
@@ -649,14 +649,14 @@ bool is_new_packet(uint8_t compBuffer[4])
             if (memcmp(compBuffer, ringBufferLoraRX[ib], 4) == 0)
             {
                 //if(bDEBUG)
-                //    Serial.printf("MSG: old one %02X%02X%02X%02X\n", compBuffer[0], compBuffer[1], compBuffer[2], compBuffer[3]);
+                //    mcSerial.printf("MSG: old one %02X%02X%02X%02X\n", compBuffer[0], compBuffer[1], compBuffer[2], compBuffer[3]);
 
                 return false;
             }
     }
 
     //if(bDEBUG)
-    //    Serial.printf("MSG: new one %02X%02X%02X%02X\n", compBuffer[0], compBuffer[1], compBuffer[2], compBuffer[3]);
+    //    mcSerial.printf("MSG: new one %02X%02X%02X%02X\n", compBuffer[0], compBuffer[1], compBuffer[2], compBuffer[3]);
 
     return true;
 }
@@ -674,7 +674,7 @@ bool doTX()
         cmd_counter--;
         
         //if(bLORADEBUG)
-        //    Serial.printf("cmd_counter > 0:%i \n", cmd_counter);
+        //    mcSerial.printf("cmd_counter > 0:%i \n", cmd_counter);
 
         return false;
     }
@@ -733,8 +733,8 @@ bool doTX()
 
                 if(bDisplayInfo)
                 {
-                    Serial.print(getTimeString());
-                    Serial.printf(" TX-APRS:%s\n", lora_tx_buffer+3);
+                    mcSerial.print(getTimeString());
+                    mcSerial.printf(" TX-APRS:%s\n", lora_tx_buffer+3);
                 }
 
                 bSetLoRaAPRS = true;
@@ -766,7 +766,7 @@ bool doTX()
                             cmd_counter=7;
                             
                             //if(bLORADEBUG)
-                            //    Serial.printf("cmd_counter = 7:%i \n", cmd_counter);
+                            //    mcSerial.printf("cmd_counter = 7:%i \n", cmd_counter);
 
                             iRead=save_read;
                             tx_waiting=true;
@@ -797,8 +797,8 @@ bool doTX()
                     {
                         if(bDisplayInfo)
                         {
-                            Serial.print(getTimeString());
-                            Serial.printf(" %s: %02X %02X%02X%02X%02X %02X %02X\n", (char*)"TX-LoRa", lora_tx_buffer[0], lora_tx_buffer[1], lora_tx_buffer[2], lora_tx_buffer[3], lora_tx_buffer[4], lora_tx_buffer[5], lora_tx_buffer[6]);
+                            mcSerial.print(getTimeString());
+                            mcSerial.printf(" %s: %02X %02X%02X%02X%02X %02X %02X\n", (char*)"TX-LoRa", lora_tx_buffer[0], lora_tx_buffer[1], lora_tx_buffer[2], lora_tx_buffer[3], lora_tx_buffer[4], lora_tx_buffer[5], lora_tx_buffer[6]);
                         }
                     }   
                     else
@@ -806,7 +806,7 @@ bool doTX()
                         if(bDisplayInfo)
                         {
                             printBuffer_aprs((char*)"TX-LoRa", aprsmsg);
-                            Serial.println("");
+                            mcSerial.println("");
                         }
                     }
 
@@ -828,7 +828,7 @@ bool doTX()
 void OnTxDone(void)
 {
     if(bLORADEBUG)
-        Serial.println("OnTXDone");
+        mcSerial.println("OnTXDone");
 
     #if defined BOARD_RAK4630
 
@@ -851,7 +851,7 @@ void OnTxDone(void)
 void OnTxTimeout(void)
 {
     if(bLORADEBUG)
-        Serial.println("OnTXTimeout");
+        mcSerial.println("OnTXTimeout");
 
     #if defined BOARD_RAK4630
 
@@ -874,7 +874,7 @@ void OnTxTimeout(void)
  */
 void OnPreambleDetect(void)
 {
-    Serial.println("OnPreambleDetect");
+    mcSerial.println("OnPreambleDetect");
 }
 
 /**@brief fires when a header is detected 
@@ -887,5 +887,5 @@ void OnHeaderDetect(void)
 
     is_receiving = true;
     
-    //Serial.println("OnHeaderDetect");
+    //mcSerial.println("OnHeaderDetect");
 }

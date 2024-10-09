@@ -23,7 +23,7 @@ void setupMCP23017()
 {
     if (!mcp.begin_I2C(0x20))
     {
-        Serial.println("[INIT]...MCP23017 not found");
+        mcSerial.println("[INIT]...MCP23017 not found");
         bMCP23017=false;
         return;
     }
@@ -45,7 +45,7 @@ void setupMCP23017()
         t_io >>= 1;
     }
 
-    Serial.printf("[INIT]...MCP23017 set [%04X] out[%04X]\n", meshcom_settings.node_mcp17io, meshcom_settings.node_mcp17out);
+    mcSerial.printf("[INIT]...MCP23017 set [%04X] out[%04X]\n", meshcom_settings.node_mcp17io, meshcom_settings.node_mcp17out);
 
     bMCP23017=true;
 }
@@ -60,7 +60,7 @@ bool loopMCP23017()
     uint16_t t_out = meshcom_settings.node_mcp17out;
     uint16_t t_t = 0;
 
-    //Serial.printf("[LOOP]...MCP23017 out [%04X] check [%04X]\n", meshcom_settings.node_mcp17out, meshcom_settings.node_mcp17io);
+    //mcSerial.printf("[LOOP]...MCP23017 out [%04X] check [%04X]\n", meshcom_settings.node_mcp17out, meshcom_settings.node_mcp17io);
 
     for(int io=0;io<16;io++)
     {
@@ -68,7 +68,7 @@ bool loopMCP23017()
         {
             mcp.digitalWrite(io, t_out & 0x0001);
 
-            //Serial.printf("oloop %i t_out:%04X\n", io, t_out);
+            //mcSerial.printf("oloop %i t_out:%04X\n", io, t_out);
         }
         else
         {
@@ -76,7 +76,7 @@ bool loopMCP23017()
             if((t_t & 0x01) == 0x01)
                 t_in = t_in | 0x8000;
             
-            //Serial.printf("iloop %i t_in:%04X read:%02X\n", io, t_in, mcp.digitalRead(io));
+            //mcSerial.printf("iloop %i t_in:%04X read:%02X\n", io, t_in, mcp.digitalRead(io));
         }
 
         if(io < 15)
@@ -90,7 +90,7 @@ bool loopMCP23017()
     }
 
     if(t_in != meshcom_settings.node_mcp17in)
-        Serial.printf("MCP23017 BITS: %04X\n", t_in);
+        mcSerial.printf("MCP23017 BITS: %04X\n", t_in);
 
     meshcom_settings.node_mcp17in = t_in;
 

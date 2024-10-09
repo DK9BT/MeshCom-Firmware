@@ -40,12 +40,12 @@ void setupBME680()
 {
 
 	if(bWXDEBUG)	
-		Serial.printf("bBME680ON:%i\n", bBME680ON);
+		mcSerial.printf("bBME680ON:%i\n", bBME680ON);
 
   // Don't mix BME28x and BME680 they share same addresses
   if(bBMEON && bBMPON)
   {
-    Serial.println("[INIT]...BME680 and BMx280 can't be used together!");
+    mcSerial.println("[INIT]...BME680 and BMx280 can't be used together!");
     return; 
   }
 
@@ -59,23 +59,23 @@ void setupBME680()
   int error = Wire.endTransmission();
 
   if (error == 0) {
-    Serial.println("[INIT]...BME680 sensor found at 0x76");
+    mcSerial.println("[INIT]...BME680 sensor found at 0x76");
     foundAddr = 1;
   } else {
-    Serial.println("[INIT]...BME680 sensor not found at 0x76");
+    mcSerial.println("[INIT]...BME680 sensor not found at 0x76");
   }
   Wire.beginTransmission(I2C_ADDRESS_BME680_2);
   error = Wire.endTransmission();
   if (error == 0) {
-    Serial.println("[INIT]...BME680 sensor found at 0x77");
+    mcSerial.println("[INIT]...BME680 sensor found at 0x77");
     foundAddr += 2;
   } else {
-    Serial.println("[INIT]...BME680 sensor not found at 0x77");
+    mcSerial.println("[INIT]...BME680 sensor not found at 0x77");
   }
 
   // if none found or there is another sensor on the other address return for now!!! TODO: fix this
   if (foundAddr == 0 || foundAddr == 3) {
-    Serial.println("[INIT]...Could not find BME680 sensor or Address conflict!");
+    mcSerial.println("[INIT]...Could not find BME680 sensor or Address conflict!");
     return;
   } else {
     bme680_found = true;
@@ -119,7 +119,7 @@ void getBME680()
     return;
 
   if (!bme.endReading()) {
-    Serial.println(F("Failed to complete reading :("));
+    mcSerial.println(F("Failed to complete reading :("));
     return;
   }
 
@@ -134,28 +134,28 @@ void getBME680()
 
   if (Serial && bWXDEBUG)
   {
-    Serial.print("BME680: ");
-    Serial.print(F("Temperature = "));
-    Serial.print(meshcom_settings.node_temp);
-    Serial.println(F(" *C"));
+    mcSerial.print("BME680: ");
+    mcSerial.print(F("Temperature = "));
+    mcSerial.print(meshcom_settings.node_temp);
+    mcSerial.println(F(" *C"));
 
-    Serial.print(F("Pressure = "));
-    Serial.print(meshcom_settings.node_press);
-    Serial.println(F(" hPa"));
+    mcSerial.print(F("Pressure = "));
+    mcSerial.print(meshcom_settings.node_press);
+    mcSerial.println(F(" hPa"));
 
-    Serial.print(F("Humidity = "));
-    Serial.print(meshcom_settings.node_hum);
-    Serial.println(F(" %"));
+    mcSerial.print(F("Humidity = "));
+    mcSerial.print(meshcom_settings.node_hum);
+    mcSerial.println(F(" %"));
 
-    Serial.print(F("Gas = "));
-    Serial.print(meshcom_settings.node_gas_res);
-    Serial.println(F(" KOhms"));
+    mcSerial.print(F("Gas = "));
+    mcSerial.print(meshcom_settings.node_gas_res);
+    mcSerial.println(F(" KOhms"));
 
-    Serial.print(F("Approx. Altitude = "));
-    Serial.print(bme_alt);
-    Serial.println(F(" m"));
+    mcSerial.print(F("Approx. Altitude = "));
+    mcSerial.print(bme_alt);
+    mcSerial.println(F(" m"));
     
-    Serial.println();
+    mcSerial.println();
   }
 }
 
