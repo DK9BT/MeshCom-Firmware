@@ -116,6 +116,8 @@ int dzeile[6] = {10, 24, 34, 44, 54, 64};
     U8G2_SSD1306_128X64_NONAME_1_SW_I2C u8g2(U8G2_R0, 18, 17, 21);
 #elif defined(BOARD_RAK4630)
     U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0);  //RESET CLOCK DATA
+#elif defined(BOARD_TLORA_OLV216)
+    U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, SCL, SDA, U8X8_PIN_NONE);
 #else
     U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, SCL, SDA, U8X8_PIN_NONE);
 #endif
@@ -1181,12 +1183,12 @@ void checkButtonState()
             if(digitalRead(BUTTON_PIN) == 0)
             {
                 checkButtoExtraLong++;
-                if(checkButtoExtraLong > 80)
+                if(checkButtoExtraLong > 100)
                 {
                     checkButtoExtraLong=0;
-                    bButtonCheck=false;
-                    meshcom_settings.node_sset = meshcom_settings.node_sset & 0x7FEF;
-                    save_settings();
+                    //bButtonCheck=false;
+                    //meshcom_settings.node_sset = meshcom_settings.node_sset & 0x7FEF;
+                    //save_settings();
                     mcSerial.println("BUTTON not connected (set BUTTON to off)");
                     return;
                 }
@@ -1201,10 +1203,10 @@ void checkButtonState()
                     if(iPress < 3)
                         iPress++;
 
-                    checkButtonTime = 20;
+                    checkButtonTime = 30;
 
                     if(bDEBUG)
-                        mcSerial.printf("checkButtonTime:%i iPress:%i\n", checkButtonTime, iPress);
+                        Serial.printf("checkButtonTime:%i iPress:%i\n", checkButtonTime, iPress);
                 }
 
                 return;
@@ -1488,7 +1490,17 @@ void sendDisplayPosition(struct aprsMessage &aprsmsg, int16_t rssi, int8_t snr)
 
             sscanf(print_text, "%lf", &lon);
 
-            sprintf(msg_text, "LON:%s%c%5i°", print_text, aprsmsg.msg_payload.charAt(itxt), dir_to);
+            char cdir_to[3];
+            float von_dir_to[10]     = {0.0, 22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5, 360.0};
+            char von_c_dir_to[10][4] = {"",  "N",  "NE",  "E",  "SE",  "S",   "SW",   "W",   "NW",  "N"} ;
+
+            for(int idir=0; idir<9; idir++)
+            {
+                if(dir_to >= von_dir_to[idir] && dir_to <= von_dir_to[idir+1])
+                    sprintf(cdir_to, "%s", von_c_dir_to[idir+1]);
+            }
+
+            sprintf(msg_text, "LON:%s%c%5i%s", print_text, aprsmsg.msg_payload.charAt(itxt), dir_to, cdir_to);
             msg_text[20]=0x00;
             sendDisplay1306(false, false, 3, dzeile[izeile], msg_text);
 
@@ -1544,7 +1556,14 @@ void sendDisplayPosition(struct aprsMessage &aprsmsg, int16_t rssi, int8_t snr)
         BLACK                           // Color: black
         );
 
+    // dir_to
+    e290_display.drawCircle(275, 107,
+        19,                             // Radius: 10px
+        BLACK                           // Color: black
+        );
+
     DrawDirection(d_dir_to, 275, 107, 20);
+    DrawDirection(d_dir_to, 274, 108, 20);
 
 
     #endif

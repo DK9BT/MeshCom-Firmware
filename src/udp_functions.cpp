@@ -402,11 +402,10 @@ bool startWIFI()
         }
      }
   }
-  Serial.printf("-> connecting to BSSID: %012x CHAN: %i\n",WiFi.BSSID(best_idx),WiFi.channel(best_idx));
-
+  mcSerial.printf("-> connecting to BSSID: %012x CHAN: %i\n",WiFi.BSSID(best_idx),WiFi.channel(best_idx));	
   WiFi.mode(WIFI_STA);
-
-	WiFi.begin(meshcom_settings.node_ssid, meshcom_settings.node_pwd, WiFi.channel(best_idx), WiFi.BSSID(best_idx),true);
+  
+	WiFi.begin(meshcom_settings.node_ssid, meshcom_settings.node_pwd);
 	delay(500);
 
   Serial.printf("WiFi.power: %i RSSI:%i\n", WiFi.getTxPower(), WiFi.RSSI());

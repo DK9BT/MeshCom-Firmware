@@ -24,6 +24,7 @@ bool setupINA226()
 
     if (!INA0.begin() )
     {
+        bINA226ON = false;
         mcSerial.println("[INIT]...INA226 not found");
         return false;
     }
