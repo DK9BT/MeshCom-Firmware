@@ -827,7 +827,7 @@ void sendExtern(bool bUDP, char *src_type, uint8_t buffer[500], uint8_t buflen)
       resetMeshComUDP();
     }
 
-    if(UdpExtern.endPacket())
+    if(!UdpExtern.endPacket())
     {
       resetMeshComUDP();
     }
