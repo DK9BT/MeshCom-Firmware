@@ -1612,6 +1612,8 @@ void esp32loop()
         // heartbeat
         if ((hb_timer + (HEARTBEAT_INTERVAL * 1000)) < millis())
         {
+            startWIFI();
+
             //DEBUG_MSG("UDP", "Sending Heartbeat");
             sendMeshComHeartbeat();
 
@@ -1635,13 +1637,12 @@ void esp32loop()
     {
         if (web_timer == 0 || ((web_timer + (HEARTBEAT_INTERVAL * 1000 * 60)) < millis()))   // HEARTBEAT_INTERVAL to minutes
         {
+            startWIFI();
+
             // restart WEB-Client
             stopWebserver();
 
             web_timer = millis();
-
-            if(!meshcom_settings.node_hasIPaddress)
-                startWIFI();
         }
 
         startWebserver();

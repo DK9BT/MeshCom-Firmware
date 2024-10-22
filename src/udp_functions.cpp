@@ -322,7 +322,10 @@ void sendMeshComUDP()
                 }
             }
 
-            Udp.endPacket();
+            if(!Udp.endPacket())
+            {
+              resetMeshComUDP();
+            }
 
             memcpy(convBuffer, ringBufferUDPout[udpRead] + 1, msg_len);
 
@@ -358,8 +361,14 @@ void sendMeshComUDP()
 
 bool startWIFI()
 {
-  if(hasIPaddress)
-    return false;
+  if(WiFi.status() == WL_CONNECTED)
+  {
+    if(strcmp(WiFi.localIP().toString().c_str(),"0.0.0.0") == 0)
+    {
+       return false;
+   }
+    else return true;
+  }
 
   if(bWIFIAP)
   {
@@ -383,8 +392,11 @@ bool startWIFI()
   }
 
 #ifdef ESP32
-  WiFi.disconnect(true);
-	delay(500);
+  if(WiFi.status() != WL_NO_SHIELD)
+  {
+    WiFi.disconnect(true);
+    delay(1000);
+  }
 
   // Scan for AP with best RSSI
 	int nrAps = WiFi.scanNetworks();
@@ -537,8 +549,8 @@ void sendMeshComHeartbeat()
 void resetMeshComUDP()
 {
   Udp.stop();
-
-  WiFi.disconnect();
+  startWIFI();
+  delay(500);
 
   if(bGATEWAY || bWEBSERVER)
   {
@@ -815,7 +827,10 @@ void sendExtern(bool bUDP, char *src_type, uint8_t buffer[500], uint8_t buflen)
       resetMeshComUDP();
     }
 
-    UdpExtern.endPacket();
+    if(UdpExtern.endPacket())
+    {
+      resetMeshComUDP();
+    }
   }
   else
   {
