@@ -16,6 +16,9 @@
 #include "io_functions.h"
 #include "softser_functions.h"
 
+#include <esp_ota_ops.h>
+#include <esp_partition.h>
+
 //TEST #include "compress_functions.h"
 
 #if defined(ENABLE_BMX680)
@@ -287,6 +290,30 @@ void commandAction(char *msg_text, bool ble)
         
         #if defined NRF52_SERIES
             NVIC_SystemReset();     // resets the device
+        #endif
+
+        return;
+    }
+    else
+    if(commandCheck(msg_text+2, (char*)"ota-update") == 0)
+    {
+        //if(ble)
+        //{
+        //    addBLECommandBack((char*)"--reboot now");
+        //}
+
+        delay(2000);
+        
+        #ifdef ESP32
+        const esp_partition_t* partition = esp_partition_find_first(esp_partition_type_t::ESP_PARTITION_TYPE_APP, esp_partition_subtype_t::ESP_PARTITION_SUBTYPE_APP_FACTORY, "safeboot");
+        if (partition) {
+            esp_ota_set_boot_partition(partition);
+            esp_restart();
+            return;
+        } else {
+        //ESP_LOGE("SafeBoot", "SafeBoot partition not found");
+        return;
+        }
         #endif
 
         return;
