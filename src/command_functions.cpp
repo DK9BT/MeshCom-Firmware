@@ -297,11 +297,6 @@ void commandAction(char *msg_text, bool ble)
     else
     if(commandCheck(msg_text+2, (char*)"ota-update") == 0)
     {
-        //if(ble)
-        //{
-        //    addBLECommandBack((char*)"--reboot now");
-        //}
-
         delay(2000);
         
         #ifdef ESP32
@@ -311,7 +306,6 @@ void commandAction(char *msg_text, bool ble)
             esp_restart();
             return;
         } else {
-        //ESP_LOGE("SafeBoot", "SafeBoot partition not found");
         return;
         }
         #endif
@@ -353,6 +347,8 @@ void commandAction(char *msg_text, bool ble)
             Serial.printf("--info     show info\n--mheard   show MHeard\n--gateway on/off/pos/nopos\n--webserver on/off\n--mesh    on/off\n");
             delay(100);
             Serial.printf("--softser on/off/send/app/baud/fixpegel/fixtemp\n");
+            delay(100);
+            Serial.printf("--ota-update    boot esp in OTA update mode\n");
         }
 
         return;
