@@ -256,6 +256,10 @@ void loopWebserver()
                 {
                     commandAction((char*)"--reboot", bPhoneReady);
                 }
+                if (web_header.indexOf("GET /ota_update") >= 0)
+                {
+                    commandAction((char*)"--ota-update", bPhoneReady);
+                }
                 else
                 if (web_header.indexOf("GET /onewire/on") >= 0)
                 {
@@ -1762,7 +1766,10 @@ void loopWebserver()
                     web_client.println("<td><a href=\"/softser\"><button class=\"button\"><b>SOFTSER</b></button></a></td>");   // page 8
 
                 // REBOOT
-                web_client.println("<td><a href=\"/reboot\"><button class=\"button\"><b>REBOOT</b></button></a></td></tr>");
+                web_client.println("<td><a href=\"/reboot\"><button class=\"button\"><b>REBOOT</b></button></a></td>");
+
+                // OTA UPDATE
+                web_client.println("<td><a href=\"/ota_update\"><button class=\"button\"><b>OTA UPDATE</b></button></a></td></tr>");
 
                 web_client.println("</table>");
 

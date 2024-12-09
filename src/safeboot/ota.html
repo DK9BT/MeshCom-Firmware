@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeshCom OTA</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            background: #1e1e1e;
+            padding: 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 450px;
+        }
+
+        .header {
+            font-size: 28px;
+            font-weight: bold;
+            color: #007BFF;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: #bbb;
+            margin-bottom: 5px;
+        }
+
+        select, input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background-color: #2e2e2e;
+            color: white;
+            font-size: 14px;
+        }
+
+        .drop-zone {
+            border: 2px dashed #007BFF;
+            border-radius: 12px;
+            padding: 30px;
+            cursor: pointer;
+            background-color: #2e2e2e;
+            color: #aaa;
+            transition: background-color 0.3s, color 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .drop-zone.dragover {
+            background-color: #1e1e1e;
+            color: #007BFF;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        progress {
+            width: 100%;
+            height: 20px;
+            margin-top: 20px;
+            border-radius: 12px;
+        }
+
+        progress::-webkit-progress-bar {
+            background-color: #444;
+            border-radius: 12px;
+        }
+
+        progress::-webkit-progress-value {
+            background-color: #007BFF;
+            border-radius: 12px;
+        }
+
+        progress::-moz-progress-bar {
+            background-color: #007BFF;
+            border-radius: 12px;
+        }
+
+        .status {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">MeshCom OTA Update</div>
+
+        <div class="form-group">
+            <label for="type">Select Upload Type</label>
+            <select id="type">
+                <option value="fr">Firmware</option>
+                <option value="fs" disabled>SPIFFS</option>
+            </select>
+        </div>
+
+        <div class="drop-zone" id="dropZone">
+            Drag and drop a file here or click to select
+        </div>
+
+        <input type="file" id="firmware" hidden />
+        <button onclick="uploadFirmware()">Upload</button>
+
+        <progress id="progressBar" value="0" max="100"></progress>
+        <div class="status" id="status"></div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('firmware');
+        const progressBar = document.getElementById('progressBar');
+        const status = document.getElementById('status');
+        let selectedFile = null;
+
+        // Drag-and-drop functionality
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', (event) => {
+            event.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (event.dataTransfer.files.length > 0) {
+                selectedFile = event.dataTransfer.files[0];
+                dropZone.textContent = selectedFile.name;
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                selectedFile = fileInput.files[0];
+                dropZone.textContent = selectedFile.name;
+            }
+        });
+
+        async function uploadFirmware() {
+            const typeSelect = document.getElementById('type');
+
+            if (!selectedFile) {
+                status.textContent = "Please select or drop a file.";
+                return;
+            }
+						
+						// Generate MD5 hash of the selected file
+            const hash = await calculateMD5(selectedFile);
+						const url = `/ota/start?mode=${typeSelect.value}&hash=${hash}`;
+
+            const formData = new FormData();
+            /*formData.append("type", typeSelect.value);*/
+            formData.append("firmware", selectedFile);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+
+            xhr.upload.addEventListener("progress", (event) => {
+                if (event.lengthComputable) {
+                    const percentComplete = (event.loaded / event.total) * 100;
+                    progressBar.value = percentComplete;
+                }
+            });
+
+            xhr.onload = () => {
+                if (xhr.status === 200) {
+                    status.textContent = "Upload successful!";
+                } else {
+                    status.textContent = `Error: ${xhr.responseText}`;
+                }
+            };
+
+            xhr.onerror = () => {
+                status.textContent = "Upload failed.";
+            };
+
+            xhr.send(formData);
+        }
+				
+				async function calculateMD5(file) {
+				            const arrayBuffer = await file.arrayBuffer();
+				            const hashBuffer = await crypto.subtle.digest("MD5", arrayBuffer);
+				            return Array.from(new Uint8Array(hashBuffer))
+				                .map(b => b.toString(16).padStart(2, '0'))
+				                .join('');
+				}
+    </script>
+</body>
+</html>
